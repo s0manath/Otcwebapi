@@ -15,27 +15,14 @@ public class RouteController : ControllerBase
         _routeService = routeService;
     }
 
-    [HttpGet("list")]
-    public async Task<IActionResult> GetList(
-        [FromQuery] string? fromDate,
-        [FromQuery] string? toDate,
-        [FromQuery] string username = "admin",
-        [FromQuery] string? region = null,
-        [FromQuery] string? district = null,
-        [FromQuery] string? franchise = null,
-        [FromQuery] string? zom = null,
-        [FromQuery] string? activityType = null,
-        [FromQuery] string? status = null,
-        [FromQuery] string? chkConfig = null,
-        [FromQuery] string? searchField = null,
-        [FromQuery] string? criteria = null,
-        [FromQuery] string? searchValue = null)
+    [HttpPost("list")]
+    public async Task<IActionResult> GetList([FromBody] RouteListRequest request)
     {
         try
         {
             var data = await _routeService.GetRouteListAsync(
-                fromDate, toDate, username, region, district, franchise, 
-                zom, activityType, status, chkConfig, searchField, criteria, searchValue);
+                request.FromDate, request.ToDate, request.Username, request.Region, request.District, request.Franchise, 
+                request.Zom, request.ActivityType, request.Status, request.ChkConfig, request.SearchField, request.Criteria, request.SearchValue);
             return Ok(data);
         }
         catch (Exception ex)
@@ -44,7 +31,7 @@ public class RouteController : ControllerBase
         }
     }
 
-    [HttpGet("filters")]
+    [HttpPost("filters")]
     public async Task<IActionResult> GetFilters()
     {
         try
@@ -58,12 +45,12 @@ public class RouteController : ControllerBase
         }
     }
 
-    [HttpGet("custodians/{scheduleId}")]
-    public async Task<IActionResult> GetCustodians(string scheduleId)
+    [HttpPost("custodians")]
+    public async Task<IActionResult> GetCustodians([FromBody] StringIdRequest request)
     {
         try
         {
-            var data = await _routeService.GetCustodiansAsync(scheduleId);
+            var data = await _routeService.GetCustodiansAsync(request.Id);
             return Ok(data);
         }
         catch (Exception ex)
@@ -72,12 +59,12 @@ public class RouteController : ControllerBase
         }
     }
 
-    [HttpGet("details/{scheduleId}")]
-    public async Task<IActionResult> GetDetails(string scheduleId)
+    [HttpPost("details")]
+    public async Task<IActionResult> GetDetails([FromBody] StringIdRequest request)
     {
         try
         {
-            var data = await _routeService.GetRouteDetailsAsync(scheduleId);
+            var data = await _routeService.GetRouteDetailsAsync(request.Id);
             if (data == null) return NotFound();
             return Ok(data);
         }

@@ -34,3 +34,18 @@ public class ActivityType
 {
     public string Name { get; set; } = string.Empty;
 }
+
+public class ScheduleListRequest
+{
+    public string FromDate { get; set; } = string.Empty;
+    public string ToDate { get; set; } = string.Empty;
+    public string Username { get; set; } = "admin";
+    public string? SearchField { get; set; }
+    public string? StartWith { get; set; }
+}
+
+public class ScheduleDeleteRequest
+{
+    public string Id { get; set; } = string.Empty;
+    public string Username { get; set; } = "admin";
+}

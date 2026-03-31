@@ -15,12 +15,12 @@ public class ScheduleController : ControllerBase
         _scheduleService = scheduleService;
     }
 
-    [HttpGet("list")]
-    public async Task<IActionResult> GetList([FromQuery] string fromDate, [FromQuery] string toDate, [FromQuery] string username = "admin", [FromQuery] string? searchField = null, [FromQuery] string? startWith = null)
+    [HttpPost("list")]
+    public async Task<IActionResult> GetList([FromBody] ScheduleListRequest request)
     {
         try
         {
-            var data = await _scheduleService.GetScheduleListAsync(fromDate, toDate, username, searchField, startWith);
+            var data = await _scheduleService.GetScheduleListAsync(request.FromDate, request.ToDate, request.Username, request.SearchField, request.StartWith);
             return Ok(data);
         }
         catch (Exception ex)
@@ -44,12 +44,11 @@ public class ScheduleController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string id, [FromBody] ScheduleUpdateRequest request)
+    [HttpPost("update")]
+    public async Task<IActionResult> Update([FromBody] ScheduleUpdateRequest request)
     {
         try
         {
-            request.ScheduleId = id;
             var success = await _scheduleService.UpdateScheduleAsync(request);
             if (success) return Ok(new { message = "Updated successfully" });
             return BadRequest(new { message = "Failed to update" });
@@ -60,12 +59,12 @@ public class ScheduleController : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string id, [FromQuery] string username = "admin")
+    [HttpPost("delete")]
+    public async Task<IActionResult> Delete([FromBody] ScheduleDeleteRequest request)
     {
         try
         {
-            var success = await _scheduleService.DeleteScheduleAsync(id, username);
+            var success = await _scheduleService.DeleteScheduleAsync(request.Id, request.Username);
             if (success) return Ok(new { message = "Deleted successfully" });
             return BadRequest(new { message = "Failed to delete. It might be already routed." });
         }
@@ -75,7 +74,7 @@ public class ScheduleController : ControllerBase
         }
     }
 
-    [HttpGet("activity-types")]
+    [HttpPost("activity-types")]
     public async Task<IActionResult> GetActivityTypes()
     {
         try

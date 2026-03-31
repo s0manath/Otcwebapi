@@ -7,7 +7,7 @@ namespace OTC.Api.Services
     public interface IRoleMasterService
     {
         Task<List<RoleMaster>> GetRolesAsync(RoleSearchRequest request);
-        Task<RoleMaster> GetRoleByIdAsync(long id);
+        Task<RoleMaster?> GetRoleByIdAsync(long id);
         Task<string> SaveRoleAsync(RoleMaster role);
         Task<List<string>> GetModuleListAsync();
     }

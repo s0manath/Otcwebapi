@@ -17,18 +17,25 @@ namespace OTC.Api.Controllers
 
         #region Custodian Master
 
-        [HttpGet("custodians")]
-        public async Task<IActionResult> GetCustodians([FromQuery] string field = null, [FromQuery] string startsWith = null, [FromQuery] string chklocked = null)
+        [HttpPost("custodians-list")]
+        public async Task<IActionResult> GetCustodians([FromBody] CustodianSearchRequest request)
         {
             var userName = User.Identity?.Name ?? "Admin";
-            var result = await _masterService.GetCustodiansAsync(field, startsWith, chklocked, userName);
+            var result = await _masterService.GetCustodiansAsync(request.Field, request.StartsWith, request.ChkLocked, userName);
             return Ok(result);
         }
 
-        [HttpGet("custodians/{id}")]
-        public async Task<IActionResult> GetCustodian(int id)
+        public class CustodianSearchRequest
         {
-            var result = await _masterService.GetCustodianByIdAsync(id);
+            public string? Field { get; set; }
+            public string? StartsWith { get; set; }
+            public string? ChkLocked { get; set; }
+        }
+
+        [HttpPost("custodians-detail")]
+        public async Task<IActionResult> GetCustodian([FromBody] IdRequest request)
+        {
+            var result = await _masterService.GetCustodianByIdAsync(request.Id);
             if (result == null) return NotFound();
             return Ok(result);
         }
@@ -46,17 +53,23 @@ namespace OTC.Api.Controllers
 
         #region Franchise Master
 
-        [HttpGet("franchises")]
-        public async Task<IActionResult> GetFranchises([FromQuery] string filterField = null, [FromQuery] string filterValue = null)
+        [HttpPost("franchises-list")]
+        public async Task<IActionResult> GetFranchises([FromBody] FranchiseSearchRequest request)
         {
-            var result = await _masterService.GetFranchisesAsync(filterField, filterValue);
+            var result = await _masterService.GetFranchisesAsync(request.FilterField, request.FilterValue);
             return Ok(result);
         }
 
-        [HttpGet("franchises/{id}")]
-        public async Task<IActionResult> GetFranchise(int id)
+        public class FranchiseSearchRequest
         {
-            var result = await _masterService.GetFranchiseByIdAsync(id);
+            public string? FilterField { get; set; }
+            public string? FilterValue { get; set; }
+        }
+
+        [HttpPost("franchises-detail")]
+        public async Task<IActionResult> GetFranchise([FromBody] IdRequest request)
+        {
+            var result = await _masterService.GetFranchiseByIdAsync(request.Id);
             if (result == null) return NotFound();
             return Ok(result);
         }
@@ -74,17 +87,17 @@ namespace OTC.Api.Controllers
 
         #region ATM Master
 
-        [HttpGet("atms")]
+        [HttpPost("atms-list")]
         public async Task<IActionResult> GetAtms()
         {
             var result = await _masterService.GetAtmsAsync();
             return Ok(result);
         }
 
-        [HttpGet("atms/{id}")]
-        public async Task<IActionResult> GetAtm(string id)
+        [HttpPost("atms-detail")]
+        public async Task<IActionResult> GetAtm([FromBody] StringIdRequest request)
         {
-            var result = await _masterService.GetAtmByIdAsync(id);
+            var result = await _masterService.GetAtmByIdAsync(request.Id);
             if (result == null) return NotFound();
             return Ok(result);
         }
@@ -102,23 +115,23 @@ namespace OTC.Api.Controllers
 
         #region Dropdowns
 
-        [HttpGet("dropdowns/locations")]
+        [HttpPost("dropdowns/locations")]
         public async Task<IActionResult> GetLocations() => Ok(await _masterService.GetLocationsAsync());
 
-        [HttpGet("dropdowns/zoms")]
+        [HttpPost("dropdowns/zoms")]
         public async Task<IActionResult> GetZoms() => Ok(await _masterService.GetZomsAsync());
 
-        [HttpGet("dropdowns/franchises")]
+        [HttpPost("dropdowns/franchises")]
         public async Task<IActionResult> GetFranchiseDropdown() => Ok(await _masterService.GetFranchiseDropdownAsync());
 
-        [HttpGet("dropdowns/routekeys")]
+        [HttpPost("dropdowns/routekeys")]
         public async Task<IActionResult> GetRouteKeys() => Ok(await _masterService.GetRouteKeysAsync());
 
-        [HttpGet("dropdowns/states")]
+        [HttpPost("dropdowns/states")]
         public async Task<IActionResult> GetStates() => Ok(await _masterService.GetStatesAsync());
 
-        [HttpGet("dropdowns/districts/{stateId}")]
-        public async Task<IActionResult> GetDistricts(int stateId) => Ok(await _masterService.GetDistrictsByStateAsync(stateId));
+        [HttpPost("dropdowns/districts")]
+        public async Task<IActionResult> GetDistricts([FromBody] IdRequest request) => Ok(await _masterService.GetDistrictsByStateAsync(request.Id));
 
         #endregion
     }

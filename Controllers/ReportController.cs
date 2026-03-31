@@ -29,7 +29,7 @@ public class ReportController : ControllerBase
         }
     }
 
-    [HttpGet("franchises")]
+    [HttpPost("franchises")]
     public async Task<IActionResult> GetFranchises()
     {
         try

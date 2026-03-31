@@ -69,3 +69,8 @@ d:\OTCNEW\OTC.Api\obj\Debug\net10.0\refint\OTC.Api.dll
 d:\OTCNEW\OTC.Api\obj\Debug\net10.0\OTC.Api.pdb
 d:\OTCNEW\OTC.Api\obj\Debug\net10.0\OTC.Api.genruntimeconfig.cache
 d:\OTCNEW\OTC.Api\obj\Debug\net10.0\ref\OTC.Api.dll
+D:\OTCNEW\OTC.Api\obj\Debug\net10.0\OTC.Api.sourcelink.json
+D:\OTCNEW\OTC.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\OTCNEW\OTC.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\OTCNEW\OTC.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\OTCNEW\OTC.Api\bin\Debug\net10.0\errors.json

@@ -21,8 +21,8 @@ namespace OTC.Api.Controllers
         [HttpPost("states/search")]
         public async Task<IActionResult> SearchStates([FromBody] RegionalSearchRequest request) => Ok(await _regionalService.GetStatesAsync(request));
 
-        [HttpGet("states/{id}")]
-        public async Task<IActionResult> GetState(int id) => Ok(await _regionalService.GetStateByIdAsync(id));
+        [HttpPost("states/detail")]
+        public async Task<IActionResult> GetState([FromBody] IdRequest request) => Ok(await _regionalService.GetStateByIdAsync(request.Id));
 
         [HttpPost("states/save")]
         public async Task<IActionResult> SaveState([FromBody] StateMaster state) => Ok(await _regionalService.SaveStateAsync(state));
@@ -31,8 +31,8 @@ namespace OTC.Api.Controllers
         [HttpPost("districts/search")]
         public async Task<IActionResult> SearchDistricts([FromBody] RegionalSearchRequest request) => Ok(await _regionalService.GetDistrictsAsync(request));
 
-        [HttpGet("districts/{id}")]
-        public async Task<IActionResult> GetDistrict(int id) => Ok(await _regionalService.GetDistrictByIdAsync(id));
+        [HttpPost("districts/detail")]
+        public async Task<IActionResult> GetDistrict([FromBody] IdRequest request) => Ok(await _regionalService.GetDistrictByIdAsync(request.Id));
 
         [HttpPost("districts/save")]
         public async Task<IActionResult> SaveDistrict([FromBody] DistrictMaster district) => Ok(await _regionalService.SaveDistrictAsync(district));
@@ -41,8 +41,8 @@ namespace OTC.Api.Controllers
         [HttpPost("zoms/search")]
         public async Task<IActionResult> SearchZoms([FromBody] RegionalSearchRequest request) => Ok(await _regionalService.GetZomsAsync(request));
 
-        [HttpGet("zoms/{id}")]
-        public async Task<IActionResult> GetZom(int id) => Ok(await _regionalService.GetZomByIdAsync(id));
+        [HttpPost("zoms/detail")]
+        public async Task<IActionResult> GetZom([FromBody] IdRequest request) => Ok(await _regionalService.GetZomByIdAsync(request.Id));
 
         [HttpPost("zoms/save")]
         public async Task<IActionResult> SaveZom([FromBody] ZomMaster zom) => Ok(await _regionalService.SaveZomAsync(zom));

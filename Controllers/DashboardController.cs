@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using OTC.Api.Models;
 using OTC.Api.Services;
 
 namespace OTC.Api.Controllers;
@@ -14,12 +15,12 @@ public class DashboardController : ControllerBase
         _dashboardService = dashboardService;
     }
 
-    [HttpGet("data")]
-    public async Task<IActionResult> GetDashboardData([FromQuery] string date, [FromQuery] string username = "admin")
+    [HttpPost("data")]
+    public async Task<IActionResult> GetDashboardData([FromBody] DashboardRequest request)
     {
         try
         {
-            var data = await _dashboardService.GetDashboardDataAsync(date, username);
+            var data = await _dashboardService.GetDashboardDataAsync(request.Date, request.Username);
             return Ok(data);
         }
         catch (Exception ex)

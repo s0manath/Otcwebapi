@@ -50,3 +50,20 @@ public class CustodianListItem
     public string CustodianName { get; set; } = string.Empty;
     public string CustodianCode { get; set; } = string.Empty;
 }
+
+public class RouteListRequest
+{
+    public string? FromDate { get; set; }
+    public string? ToDate { get; set; }
+    public string Username { get; set; } = "admin";
+    public string? Region { get; set; }
+    public string? District { get; set; }
+    public string? Franchise { get; set; }
+    public string? Zom { get; set; }
+    public string? ActivityType { get; set; }
+    public string? Status { get; set; }
+    public string? ChkConfig { get; set; }
+    public string? SearchField { get; set; }
+    public string? Criteria { get; set; }
+    public string? SearchValue { get; set; }
+}

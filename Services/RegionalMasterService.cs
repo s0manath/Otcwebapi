@@ -35,7 +35,7 @@ namespace OTC.Api.Services
             return Task.FromResult(result.ToList());
         }
 
-        public Task<StateMaster> GetStateByIdAsync(int id) => Task.FromResult(_mockStates.FirstOrDefault(x => x.Id == id));
+        public Task<StateMaster?> GetStateByIdAsync(int id) => Task.FromResult<StateMaster?>(_mockStates.FirstOrDefault(x => x.Id == id));
 
         public Task<bool> SaveStateAsync(StateMaster state)
         {
@@ -68,7 +68,7 @@ namespace OTC.Api.Services
             return Task.FromResult(result.ToList());
         }
 
-        public Task<DistrictMaster> GetDistrictByIdAsync(int id) => Task.FromResult(_mockDistricts.FirstOrDefault(x => x.Id == id));
+        public Task<DistrictMaster?> GetDistrictByIdAsync(int id) => Task.FromResult<DistrictMaster?>(_mockDistricts.FirstOrDefault(x => x.Id == id));
 
         public Task<bool> SaveDistrictAsync(DistrictMaster district)
         {
@@ -99,7 +99,7 @@ namespace OTC.Api.Services
             return Task.FromResult(result.ToList());
         }
 
-        public Task<ZomMaster> GetZomByIdAsync(int id) => Task.FromResult(_mockZoms.FirstOrDefault(x => x.Id == id));
+        public Task<ZomMaster?> GetZomByIdAsync(int id) => Task.FromResult<ZomMaster?>(_mockZoms.FirstOrDefault(x => x.Id == id));
 
         public Task<bool> SaveZomAsync(ZomMaster zom)
         {

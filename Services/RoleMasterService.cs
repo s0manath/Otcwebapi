@@ -70,10 +70,10 @@ namespace OTC.Api.Services
             return Task.FromResult(result.ToList());
         }
 
-        public Task<RoleMaster> GetRoleByIdAsync(long id)
+        public Task<RoleMaster?> GetRoleByIdAsync(long id)
         {
             var role = _mockRoles.FirstOrDefault(x => x.SlNo == id);
-            return Task.FromResult(role);
+            return Task.FromResult<RoleMaster?>(role);
         }
 
         public Task<string> SaveRoleAsync(RoleMaster role)

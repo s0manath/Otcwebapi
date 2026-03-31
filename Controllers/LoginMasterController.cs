@@ -22,10 +22,10 @@ public class LoginMasterController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("{username}")]
-    public async Task<IActionResult> Get(string username)
+    [HttpPost("detail")]
+    public async Task<IActionResult> Get([FromBody] StringIdRequest request)
     {
-        var result = await _loginMasterService.GetLoginByIdAsync(username);
+        var result = await _loginMasterService.GetLoginByIdAsync(request.Id);
         if (result == null) return NotFound();
         return Ok(result);
     }
@@ -37,10 +37,10 @@ public class LoginMasterController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("hierarchy/{type}")]
-    public async Task<IActionResult> GetHierarchy(string type, [FromQuery] string? parentId)
+    [HttpPost("hierarchy")]
+    public async Task<IActionResult> GetHierarchy([FromBody] HierarchyRequest request)
     {
-        var result = await _loginMasterService.GetHierarchyAsync(type, parentId);
+        var result = await _loginMasterService.GetHierarchyAsync(request.Type, request.ParentId);
         return Ok(result);
     }
 }

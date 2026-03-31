@@ -1,6 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using OTC.Api.Models;
 
 namespace OTC.Api.Services
@@ -29,7 +33,7 @@ namespace OTC.Api.Services
             return await connection.QueryAsync<CustodianMaster>("usp_GetCustodianData", parameters, commandType: CommandType.StoredProcedure);
         }
 
-        public async Task<CustodianMaster> GetCustodianByIdAsync(int id)
+        public async Task<CustodianMaster?> GetCustodianByIdAsync(int id)
         {
             using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();
@@ -95,7 +99,7 @@ namespace OTC.Api.Services
             return await connection.QueryAsync<FranchiseMaster>("Proc_GetFranchiseMasterWithFilter", parameters, commandType: CommandType.StoredProcedure);
         }
 
-        public async Task<FranchiseMaster> GetFranchiseByIdAsync(int id)
+        public async Task<FranchiseMaster?> GetFranchiseByIdAsync(int id)
         {
             using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();
@@ -144,7 +148,7 @@ namespace OTC.Api.Services
             return await connection.QueryAsync<AtmMaster>(sql);
         }
 
-        public async Task<AtmMaster> GetAtmByIdAsync(string atmId)
+        public async Task<AtmMaster?> GetAtmByIdAsync(string atmId)
         {
             using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();

@@ -1,0 +1,317 @@
+{
+  "$schema": "http://json.schemastore.org/sarif-1.0.0",
+  "version": "1.0.0",
+  "runs": [
+    {
+      "tool": {
+        "name": "Microsoft (R) Visual C# Compiler",
+        "version": "5.0.0.0",
+        "fileVersion": "5.0.0-2.25523.111 (b0f34d51)",
+        "semanticVersion": "5.0.0",
+        "language": "en-US"
+      },
+      "results": [
+        {
+          "ruleId": "CS0246",
+          "level": "error",
+          "message": "The type or namespace name 'DashboardRequest' could not be found (are you missing a using directive or an assembly reference?)",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/OTCNEW/OTC.Api/Controllers/DashboardController.cs",
+                "region": {
+                  "startLine": 18,
+                  "startColumn": 66,
+                  "endLine": 18,
+                  "endColumn": 82
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "CS8625",
+          "level": "warning",
+          "message": "Cannot convert null literal to non-nullable reference type.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/OTCNEW/OTC.Api/Services/IMasterService.cs",
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 78,
+                  "endLine": 10,
+                  "endColumn": 82
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8625",
+          "level": "warning",
+          "message": "Cannot convert null literal to non-nullable reference type.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/OTCNEW/OTC.Api/Services/IMasterService.cs",
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 104,
+                  "endLine": 10,
+                  "endColumn": 108
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8625",
+          "level": "warning",
+          "message": "Cannot convert null literal to non-nullable reference type.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/OTCNEW/OTC.Api/Services/IMasterService.cs",
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 129,
+                  "endLine": 10,
+                  "endColumn": 133
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8625",
+          "level": "warning",
+          "message": "Cannot convert null literal to non-nullable reference type.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/OTCNEW/OTC.Api/Services/IMasterService.cs",
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 153,
+                  "endLine": 10,
+                  "endColumn": 157
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8625",
+          "level": "warning",
+          "message": "Cannot convert null literal to non-nullable reference type.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/OTCNEW/OTC.Api/Services/IMasterService.cs",
+                "region": {
+                  "startLine": 15,
+                  "startColumn": 84,
+                  "endLine": 15,
+                  "endColumn": 88
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8625",
+          "level": "warning",
+          "message": "Cannot convert null literal to non-nullable reference type.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/OTCNEW/OTC.Api/Services/IMasterService.cs",
+                "region": {
+                  "startLine": 15,
+                  "startColumn": 111,
+                  "endLine": 15,
+                  "endColumn": 115
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8625",
+          "level": "warning",
+          "message": "Cannot convert null literal to non-nullable reference type.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/OTCNEW/OTC.Api/Services/MasterService.cs",
+                "region": {
+                  "startLine": 20,
+                  "startColumn": 91,
+                  "endLine": 20,
+                  "endColumn": 95
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8625",
+          "level": "warning",
+          "message": "Cannot convert null literal to non-nullable reference type.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/OTCNEW/OTC.Api/Services/MasterService.cs",
+                "region": {
+                  "startLine": 20,
+                  "startColumn": 117,
+                  "endLine": 20,
+                  "endColumn": 121
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8625",
+          "level": "warning",
+          "message": "Cannot convert null literal to non-nullable reference type.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/OTCNEW/OTC.Api/Services/MasterService.cs",
+                "region": {
+                  "startLine": 20,
+                  "startColumn": 142,
+                  "endLine": 20,
+                  "endColumn": 146
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8625",
+          "level": "warning",
+          "message": "Cannot convert null literal to non-nullable reference type.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/OTCNEW/OTC.Api/Services/MasterService.cs",
+                "region": {
+                  "startLine": 20,
+                  "startColumn": 166,
+                  "endLine": 20,
+                  "endColumn": 170
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8625",
+          "level": "warning",
+          "message": "Cannot convert null literal to non-nullable reference type.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/OTCNEW/OTC.Api/Services/MasterService.cs",
+                "region": {
+                  "startLine": 88,
+                  "startColumn": 97,
+                  "endLine": 88,
+                  "endColumn": 101
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        },
+        {
+          "ruleId": "CS8625",
+          "level": "warning",
+          "message": "Cannot convert null literal to non-nullable reference type.",
+          "locations": [
+            {
+              "resultFile": {
+                "uri": "file:///D:/OTCNEW/OTC.Api/Services/MasterService.cs",
+                "region": {
+                  "startLine": 88,
+                  "startColumn": 124,
+                  "endLine": 88,
+                  "endColumn": 128
+                }
+              }
+            }
+          ],
+          "properties": {
+            "warningLevel": 1
+          }
+        }
+      ],
+      "rules": {
+        "CS0246": {
+          "id": "CS0246",
+          "defaultLevel": "error",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS0246)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry",
+              "NotConfigurable"
+            ]
+          }
+        },
+        "CS8625": {
+          "id": "CS8625",
+          "shortDescription": "Cannot convert null literal to non-nullable reference type.",
+          "defaultLevel": "warning",
+          "helpUri": "https://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS8625)",
+          "properties": {
+            "category": "Compiler",
+            "isEnabledByDefault": true,
+            "tags": [
+              "Compiler",
+              "Telemetry"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

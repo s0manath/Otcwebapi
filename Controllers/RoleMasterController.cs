@@ -24,10 +24,10 @@ namespace OTC.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(long id)
+        [HttpPost("detail")]
+        public async Task<IActionResult> Get([FromBody] LongIdRequest request)
         {
-            var result = await _roleService.GetRoleByIdAsync(id);
+            var result = await _roleService.GetRoleByIdAsync(request.Id);
             if (result == null) return NotFound();
             return Ok(result);
         }
@@ -39,7 +39,7 @@ namespace OTC.Api.Controllers
             return Ok(new { message = result });
         }
 
-        [HttpGet("modules")]
+        [HttpPost("modules")]
         public async Task<IActionResult> GetModules()
         {
             var result = await _roleService.GetModuleListAsync();

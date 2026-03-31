@@ -35,3 +35,9 @@ public class LoginMasterSearchRequest
     public string? StartWith { get; set; }
     public bool LockedUser { get; set; }
 }
+
+public class HierarchyRequest
+{
+    public string Type { get; set; } = string.Empty;
+    public string? ParentId { get; set; }
+}

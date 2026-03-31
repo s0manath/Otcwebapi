@@ -23,3 +23,9 @@ public class DashboardData
     public List<DashboardStats> Stats { get; set; } = new();
     public List<DistrictPerformance> Performance { get; set; } = new();
 }
+
+public class DashboardRequest
+{
+    public string Date { get; set; } = string.Empty;
+    public string Username { get; set; } = "admin";
+}
