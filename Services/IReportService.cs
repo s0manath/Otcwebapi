@@ -1,0 +1,9 @@
+using OTC.Api.Models;
+
+namespace OTC.Api.Services;
+
+public interface IReportService
+{
+    Task<ReportDataResponse> GetReportDataAsync(ReportRequest request);
+    Task<IEnumerable<FilterItem>> GetFranchisesAsync();
+}

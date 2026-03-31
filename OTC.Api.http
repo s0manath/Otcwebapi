@@ -1,0 +1,6 @@
+@OTC.Api_HostAddress = http://localhost:5218
+
+GET {{OTC.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
