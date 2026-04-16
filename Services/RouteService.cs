@@ -132,12 +132,17 @@ public class RouteService : IRouteService
         {
             await connection.OpenAsync();
             string sql = @"
-                select atm_schedule.Schedule_Id as ID, ATMID, Activity_Type, rm.Routekey, 
-                       c1.CustodianCode as Custodian1, c2.CustodianCode as Custodian2
+                select 
+                    atm_schedule.Schedule_Id as ScheduleId,
+                    ATMID as AtmId,
+                    Activity_Type as ActivityType,
+                    rm.Routekey as RouteKey, 
+                    c1.CustodianCode as Custodian1,
+                    c2.CustodianCode as Custodian2
                 from atm_schedule 
                 left join RouteConfig on ATM_Schedule.Schedule_Id = RouteConfig.Schedule_Id 
                 left join CustodianMaster c1 on c1.CustodianCode = RouteConfig.Custodian1 
-                left join RouteMaster rm on C1.CustodianID = rm.CustodianID and C1.TouchKeyID = rm.TouchKeyID
+                left join RouteMaster rm on c1.CustodianID = rm.CustodianID and c1.TouchKeyID = rm.TouchKeyID
                 left join CustodianMaster c2 on c2.CustodianCode = RouteConfig.Custodian2 
                 where atm_schedule.Schedule_Id = @ScheduleId";
 
