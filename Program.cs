@@ -41,7 +41,7 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 app.UseCors("AllowAll");
-app.UseMiddleware<EncryptionMiddleware>();
+// app.UseMiddleware<EncryptionMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 
