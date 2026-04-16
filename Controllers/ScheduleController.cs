@@ -29,7 +29,7 @@ public class ScheduleController : ControllerBase
         }
     }
 
-    [HttpPost]
+    [HttpPost("insert")]
     public async Task<IActionResult> Insert([FromBody] ScheduleInsertRequest request)
     {
         try

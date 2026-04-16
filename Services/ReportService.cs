@@ -17,19 +17,19 @@ public class ReportService : IReportService
 
     public async Task<ReportDataResponse> GetReportDataAsync(ReportRequest request)
     {
-        string sql = string.Empty;
+        string baseSql = string.Empty;
         var parameters = new DynamicParameters();
 
         switch (request.ReportType.ToLower())
         {
             case "scheduled":
-                sql = GetScheduledDetailSql(request, parameters);
+                baseSql = GetScheduledDetailSql(request, parameters);
                 break;
             case "route-details":
-                sql = GetRouteMappedSql(request, parameters);
+                baseSql = GetRouteMappedSql(request, parameters);
                 break;
             case "otc-checkout":
-                sql = GetOTCCheckoutSql(request, parameters);
+                baseSql = GetOTCCheckoutSql(request, parameters);
                 break;
             case "otc-activity":
                 return await GetStoredProcedureReportAsync("sp_GetOTCActivityDetailReport", request);
@@ -42,7 +42,24 @@ public class ReportService : IReportService
         using (var connection = new SqlConnection(_connectionString))
         {
             await connection.OpenAsync();
-            var data = await connection.QueryAsync<dynamic>(sql, parameters);
+
+            // 1. Get Total Count
+            string countSql = $"SELECT COUNT(*) FROM ({baseSql}) AS T";
+            int totalCount = await connection.ExecuteScalarAsync<int>(countSql, parameters);
+
+            // 2. Get Paged Data
+            // Ensure we have an order by for OFFSET/FETCH
+            if (!baseSql.Contains("order by", StringComparison.OrdinalIgnoreCase))
+            {
+                baseSql += " ORDER BY (SELECT NULL)";
+            }
+
+            int offset = (request.PageNumber - 1) * request.PageSize;
+            string pagedSql = $"{baseSql} OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+            parameters.Add("@Offset", offset);
+            parameters.Add("@PageSize", request.PageSize);
+
+            var data = await connection.QueryAsync<dynamic>(pagedSql, parameters);
             
             var columns = new List<string>();
             if (data.Any())
@@ -54,7 +71,8 @@ public class ReportService : IReportService
             return new ReportDataResponse
             {
                 Columns = columns,
-                Data = data
+                Data = data,
+                TotalCount = totalCount
             };
         }
     }
@@ -166,14 +184,19 @@ public class ReportService : IReportService
             }
 
             var data = await connection.QueryAsync<dynamic>(spName, parameters, commandType: CommandType.StoredProcedure);
+            int totalCount = data.Count();
+
+            // Apply in-memory pagination for SPs as they don't support it natively in this context
+            var pagedData = data.Skip((request.PageNumber - 1) * request.PageSize).Take(request.PageSize).ToList();
+
             var columns = new List<string>();
-            if (data.Any())
+            if (pagedData.Any())
             {
-                var firstRow = (IDictionary<string, object>)data.First();
+                var firstRow = (IDictionary<string, object>)pagedData.First();
                 columns = firstRow.Keys.ToList();
             }
 
-            return new ReportDataResponse { Columns = columns, Data = data };
+            return new ReportDataResponse { Columns = columns, Data = pagedData, TotalCount = totalCount };
         }
     }
 

@@ -29,7 +29,7 @@ public class ScheduleService : IScheduleService
             parameters.Add("@UserName", username);
 
             var result = await connection.QueryAsync<ScheduleListItem>(
-                "usp_GetScheduleList",
+                "India1_usp_GetScheduleList",
                 parameters,
                 commandType: CommandType.StoredProcedure
             );
@@ -64,10 +64,10 @@ public class ScheduleService : IScheduleService
                 scheduleId = idResult ?? throw new Exception("Failed to generate Schedule ID");
             }
 
-            // Legacy SP: ScheduleRouteInsertV1
+            // Legacy SP: India1_USP_ScheduleRouteInsertV1
             var parameters = new DynamicParameters();
             parameters.Add("@Schedule_Id", scheduleId);
-            parameters.Add("@ATMID", request.ATMID ?? string.Empty);
+            parameters.Add("@ATMID", request.AtmId ?? string.Empty);
             parameters.Add("@Activity_Type", request.ActivityType);
             parameters.Add("@Schedule_Date", request.ScheduleDate);
             parameters.Add("@CreatedDate", DateTime.Now.ToString("MM/dd/yyyy hh:mm"));
@@ -78,7 +78,7 @@ public class ScheduleService : IScheduleService
             parameters.Add("@Comment", string.Empty);
 
             await connection.ExecuteAsync(
-                "ScheduleRouteInsertV1",
+                "India1_USP_ScheduleRouteInsertV1",
                 parameters,
                 commandType: CommandType.StoredProcedure
             );
@@ -95,7 +95,7 @@ public class ScheduleService : IScheduleService
             
             var parameters = new DynamicParameters();
             parameters.Add("@Schedule_Id", request.ScheduleId);
-            parameters.Add("@ATMID", request.ATMID);
+            parameters.Add("@ATMID", request.AtmId);
             parameters.Add("@Activity_Type", request.ActivityType);
             parameters.Add("@Schedule_Date", request.ScheduleDate);
             parameters.Add("@CreatedDate", string.Empty);
@@ -106,7 +106,7 @@ public class ScheduleService : IScheduleService
             parameters.Add("@Comment", request.Comment);
 
             await connection.ExecuteAsync(
-                "ScheduleRouteInsertV1",
+                "India1_USP_ScheduleRouteInsertV1",
                 parameters,
                 commandType: CommandType.StoredProcedure
             );

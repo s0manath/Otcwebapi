@@ -9,10 +9,13 @@ public class ReportRequest
     public string? FranchiseCode { get; set; }
     public string ReportType { get; set; } = string.Empty;
     public string Username { get; set; } = "admin";
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 15;
 }
 
 public class ReportDataResponse
 {
     public IEnumerable<string> Columns { get; set; } = new List<string>();
     public IEnumerable<dynamic> Data { get; set; } = new List<dynamic>();
+    public int TotalCount { get; set; }
 }

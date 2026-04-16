@@ -55,7 +55,7 @@ public class RouteService : IRouteService
             parameters.Add("@Username", username);
 
             return await connection.QueryAsync<RouteListItem>(
-                "spFillRouteConfig",
+                "India1_USP_FillRouteConfig",
                 parameters,
                 commandType: CommandType.StoredProcedure
             );
@@ -112,7 +112,7 @@ public class RouteService : IRouteService
                 ? "sp_RouteConfigBulk" : "sp_RouteConfig";
 
             var parameters = new DynamicParameters();
-            parameters.Add("@AtmId", request.ATMID);
+            parameters.Add("@AtmId", request.AtmId);
             parameters.Add("@RouteConfig_Id", existing?.RouteConfig_Id ?? string.Empty);
             parameters.Add("@Schedule_Id", request.ScheduleId);
             parameters.Add("@RouteKey", request.RouteKey);

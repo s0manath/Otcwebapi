@@ -2,10 +2,10 @@ namespace OTC.Api.Models;
 
 public class ScheduleListItem
 {
-    public string Schedule_Id { get; set; } = string.Empty;
-    public string ATMID { get; set; } = string.Empty;
-    public string Activity_Type { get; set; } = string.Empty;
-    public string Schedule_Date { get; set; } = string.Empty;
+    public string ScheduleId { get; set; } = string.Empty;
+    public string AtmId { get; set; } = string.Empty;
+    public string ActivityType { get; set; } = string.Empty;
+    public string ScheduleDate { get; set; } = string.Empty;
     public string CreatedDate { get; set; } = string.Empty;
     public string CreatedBy { get; set; } = string.Empty;
     public string Comment { get; set; } = string.Empty;
@@ -13,7 +13,7 @@ public class ScheduleListItem
 
 public class ScheduleInsertRequest
 {
-    public string? ATMID { get; set; }
+    public string? AtmId { get; set; }
     public string ActivityType { get; set; } = string.Empty;
     public string ScheduleDate { get; set; } = string.Empty;
     public string Username { get; set; } = "admin";
@@ -23,7 +23,7 @@ public class ScheduleInsertRequest
 public class ScheduleUpdateRequest
 {
     public string ScheduleId { get; set; } = string.Empty;
-    public string ATMID { get; set; } = string.Empty;
+    public string AtmId { get; set; } = string.Empty;
     public string ActivityType { get; set; } = string.Empty;
     public string ScheduleDate { get; set; } = string.Empty;
     public string Username { get; set; } = "admin";

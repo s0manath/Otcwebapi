@@ -2,27 +2,27 @@ namespace OTC.Api.Models;
 
 public class RouteListItem
 {
-    public string ID { get; set; } = string.Empty; // This corresponds to Schedule_Id in some contexts
-    public string RouteID { get; set; } = string.Empty; // RouteConfig_Id
-    public string ATMID { get; set; } = string.Empty;
-    public string Activity_Type { get; set; } = string.Empty;
-    public string Schedule_Date { get; set; } = string.Empty;
+    public string ScheduleId { get; set; } = string.Empty;
+    public string RouteId { get; set; } = string.Empty;
+    public string AtmId { get; set; } = string.Empty;
+    public string ActivityType { get; set; } = string.Empty;
+    public string ScheduleDate { get; set; } = string.Empty;
     public string Region { get; set; } = string.Empty;
-    public string District { get; set; } = string.Empty;
-    public string Franchise { get; set; } = string.Empty;
-    public string Zom { get; set; } = string.Empty;
+    public string DistrictName { get; set; } = string.Empty;
+    public string FranchiseName { get; set; } = string.Empty;
+    public string ZomName { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public string RouteKey { get; set; } = string.Empty;
     public string Custodian1 { get; set; } = string.Empty;
     public string Custodian2 { get; set; } = string.Empty;
-    public string CompletedDate { get; set; } = string.Empty;
+    public string CroType { get; set; } = string.Empty;
 }
 
 public class RouteSaveRequest
 {
     public string ScheduleId { get; set; } = string.Empty;
     public string RouteConfigId { get; set; } = string.Empty;
-    public string ATMID { get; set; } = string.Empty;
+    public string AtmId { get; set; } = string.Empty;
     public string RouteKey { get; set; } = string.Empty;
     public string Custodian1 { get; set; } = string.Empty;
     public string Custodian2 { get; set; } = string.Empty;
