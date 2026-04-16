@@ -15,12 +15,40 @@ public class DashboardController : ControllerBase
         _dashboardService = dashboardService;
     }
 
-    [HttpPost("data")]
-    public async Task<IActionResult> GetDashboardData([FromBody] DashboardRequest request)
+    [HttpGet("summary")]
+    public async Task<IActionResult> GetSummary([FromQuery] string date, [FromQuery] string username = "admin")
     {
         try
         {
-            var data = await _dashboardService.GetDashboardDataAsync(request.Date, request.Username);
+            var data = await _dashboardService.GetSummaryMetricsAsync(date, username);
+            return Ok(data);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = ex.Message });
+        }
+    }
+
+    [HttpGet("chart")]
+    public async Task<IActionResult> GetChartData([FromQuery] string date, [FromQuery] string username = "admin")
+    {
+        try
+        {
+            var data = await _dashboardService.GetChartDataAsync(date, username);
+            return Ok(data);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = ex.Message });
+        }
+    }
+
+    [HttpGet("district-report")]
+    public async Task<IActionResult> GetDistrictReport([FromQuery] string date, [FromQuery] string username = "admin")
+    {
+        try
+        {
+            var data = await _dashboardService.GetDistrictReportAsync(date, username);
             return Ok(data);
         }
         catch (Exception ex)
