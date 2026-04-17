@@ -52,8 +52,8 @@ public class DashboardService : IDashboardService
         {
             await connection.OpenAsync();
             var parameters = new DynamicParameters();
-            parameters.Add("@Date", string.IsNullOrEmpty(date) ? DateTime.Now.ToString("yyyy-MM-dd") : date);
-            parameters.Add("@Username", string.IsNullOrEmpty(username) ? "admin" : username);
+            parameters.Add("@dateval", string.IsNullOrEmpty(date) ? DateTime.Now.ToString("yyyy-MM-dd") : date);
+            parameters.Add("@uname", string.IsNullOrEmpty(username) ? "admin" : username);
 
             return await connection.QueryAsync<ChartData>(
                 "Proc_OTCHomeDashboardChart",
@@ -68,9 +68,15 @@ public class DashboardService : IDashboardService
         using (var connection = new SqlConnection(_connectionString))
         {
             await connection.OpenAsync();
+
             var parameters = new DynamicParameters();
-            parameters.Add("@Date", string.IsNullOrEmpty(date) ? DateTime.Now.ToString("yyyy-MM-dd") : date);
-            parameters.Add("@UserName", string.IsNullOrEmpty(username) ? "admin" : username);
+            parameters.Add("@Date", string.IsNullOrEmpty(date)
+                ? DateTime.Now.ToString("yyyy-MM-dd")
+                : date);
+
+            parameters.Add("@UserName", string.IsNullOrEmpty(username)
+                ? "admin"
+                : username);
 
             var data = await connection.QueryAsync<dynamic>(
                 "usp_GetHomeDepartmentReportDistrictWise",
@@ -78,17 +84,35 @@ public class DashboardService : IDashboardService
                 commandType: CommandType.StoredProcedure
             );
 
-            return data.Select(d => 
+            return data.Select(d =>
             {
                 var dict = (IDictionary<string, object>)d;
+
                 return new DistrictReportItem
                 {
-                    DistrictName = dict.TryGetValue("District Name", out var dn) ? dn?.ToString() ?? "Unknown" : "Unknown",
-                    Total = dict.TryGetValue("Total", out var t) ? Convert.ToInt32(t ?? 0) : 0,
-                    Completed = dict.TryGetValue("Completed", out var c) ? Convert.ToInt32(c ?? 0) : 0,
-                    ResetAndCompleted = dict.TryGetValue("Reset and Completed", out var r) ? Convert.ToInt32(r ?? 0) : 0,
-                    Pending = dict.TryGetValue("Skipped", out var s) ? Convert.ToInt32(s ?? 0) : 0,
-                    DistrictCode = dict.TryGetValue("DistrictCode", out var dc) ? dc?.ToString() ?? "" : ""
+                    DistrictName = dict.TryGetValue("District Name", out var dn)
+                        ? dn?.ToString() ?? "Unknown"
+                        : "Unknown",
+
+                    Total = dict.TryGetValue("Total", out var t)
+                        ? t?.ToString() ?? "0"
+                        : "0",
+
+                    Completed = dict.TryGetValue("Completed", out var c)
+                        ? c?.ToString() ?? "0"
+                        : "0",
+
+                    ResetAndCompleted = dict.TryGetValue("Reset and Completed", out var r)
+                        ? r?.ToString() ?? "0"
+                        : "0",
+
+                    Pending = dict.TryGetValue("Skipped", out var s)
+                        ? s?.ToString() ?? "0"
+                        : "0",
+
+                    DistrictCode = dict.TryGetValue("DistrictCode", out var dc)
+                        ? dc?.ToString() ?? string.Empty
+                        : string.Empty
                 };
             }).ToList();
         }

@@ -42,16 +42,16 @@ public class RouteService : IRouteService
             if (!string.IsNullOrEmpty(toDate)) parameters.Add("@DateTo", DateTime.Parse(toDate).Date.AddDays(1).AddSeconds(-1));
             else parameters.Add("@DateTo", DBNull.Value);
 
-            parameters.Add("@Region", string.IsNullOrEmpty(region) ? DBNull.Value : region);
-            parameters.Add("@Location", string.IsNullOrEmpty(district) ? DBNull.Value : district);
-            parameters.Add("@Franchise", string.IsNullOrEmpty(franchise) ? DBNull.Value : franchise);
-            parameters.Add("@ZOM", string.IsNullOrEmpty(zom) ? DBNull.Value : zom);
-            parameters.Add("@ActivityType", string.IsNullOrEmpty(activityType) ? DBNull.Value : activityType);
-            parameters.Add("@FilterStatus", string.IsNullOrEmpty(status) ? DBNull.Value : status);
-            parameters.Add("@ChkConfig", string.IsNullOrEmpty(chkConfig) ? DBNull.Value : chkConfig);
-            parameters.Add("@Field", string.IsNullOrEmpty(searchField) ? DBNull.Value : searchField);
-            parameters.Add("@Criteria", string.IsNullOrEmpty(criteria) ? DBNull.Value : criteria);
-            parameters.Add("@Value", string.IsNullOrEmpty(searchValue) ? DBNull.Value : searchValue);
+            //parameters.Add("@Region", string.IsNullOrEmpty(region) ? DBNull.Value : region);
+            //parameters.Add("@Location", string.IsNullOrEmpty(district) ? DBNull.Value : district);
+            //parameters.Add("@Franchise", string.IsNullOrEmpty(franchise) ? DBNull.Value : franchise);
+            //parameters.Add("@ZOM", string.IsNullOrEmpty(zom) ? DBNull.Value : zom);
+            //parameters.Add("@ActivityType", string.IsNullOrEmpty(activityType) ? DBNull.Value : activityType);
+            //parameters.Add("@FilterStatus", string.IsNullOrEmpty(status) ? DBNull.Value : status);
+            //parameters.Add("@ChkConfig", string.IsNullOrEmpty(chkConfig) ? DBNull.Value : chkConfig);
+            //parameters.Add("@Field", string.IsNullOrEmpty(searchField) ? DBNull.Value : searchField);
+            //parameters.Add("@Criteria", string.IsNullOrEmpty(criteria) ? DBNull.Value : criteria);
+            //parameters.Add("@Value", string.IsNullOrEmpty(searchValue) ? DBNull.Value : searchValue);
             parameters.Add("@Username", username);
 
             return await connection.QueryAsync<RouteListItem>(

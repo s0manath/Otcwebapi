@@ -144,7 +144,7 @@ namespace OTC.Api.Services
         {
             using var connection = new SqlConnection(_connectionString);
             // Reusing the simple list query or direct SQL for ATM summary
-            string sql = "SELECT EquipId as AtmId, Aliasatmid as AliasAtmId, Bank, SiteID, Site, City, State, AtmStatus, FranchiseCode as Franchise FROM Purchase";
+            string sql = "SELECT top 100 EquipId as AtmId, Aliasatmid as AliasAtmId, Bank, SiteID, Site, City, State, AtmStatus, FranchiseCode as Franchise FROM Purchase";
             return await connection.QueryAsync<AtmMaster>(sql);
         }
 
@@ -242,13 +242,13 @@ namespace OTC.Api.Services
         public async Task<IEnumerable<MasterDropdownItem>> GetStatesAsync()
         {
             using var connection = new SqlConnection(_connectionString);
-            return await connection.QueryAsync<MasterDropdownItem>("select slno as Id, state_name as Name from State_Master order by state_name");
+            return await connection.QueryAsync<MasterDropdownItem>("select slno as Id, state_name as Name from StateMaster order by state_name");
         }
 
         public async Task<IEnumerable<MasterDropdownItem>> GetDistrictsByStateAsync(int stateId)
         {
             using var connection = new SqlConnection(_connectionString);
-            return await connection.QueryAsync<MasterDropdownItem>("select district_id as Id, district_name as Name from district_master where state_id = @stateId order by district_name", new { stateId });
+            return await connection.QueryAsync<MasterDropdownItem>("select district_id as Id, district_name as Name from districtmaster where state_id = @stateId order by district_name", new { stateId });
         }
 
         #endregion
