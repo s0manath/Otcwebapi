@@ -52,7 +52,7 @@ namespace OTC.Api.Models
         public string Pincode { get; set; }
         public string Region { get; set; }
         public string Location { get; set; }
-        public DateTime? InstallDate { get; set; }
+        public string? InstallDate { get; set; }
         public string AtmCategory { get; set; }
         public string Model { get; set; }
         public string LoiCode { get; set; }
