@@ -20,6 +20,7 @@ namespace OTC.Api.Models
         public string CustodianCode { get; set; } // txtcid in legacy
         public DateTime? AccessFrom { get; set; }
         public DateTime? AccessTo { get; set; }
+        public string IemiNo { get; set; }
         public string ProfileImage { get; set; }
         public bool IsActive { get; set; }
     }
@@ -70,6 +71,22 @@ namespace OTC.Api.Models
         public string Custodian3 { get; set; }
         public string RouteKey { get; set; }
         public bool IsActive { get; set; }
+    }
+
+    public class StateMaster
+    {
+        public int Id { get; set; } // slno in DB
+        public string StateName { get; set; }
+        public string RegionCode { get; set; }
+        public string RegionName { get; set; }
+    }
+
+    public class DistrictMaster
+    {
+        public int Id { get; set; } // district_id in DB
+        public string DistrictName { get; set; }
+        public int StateId { get; set; }
+        public string StateName { get; set; }
     }
 
     public class MasterDropdownItem

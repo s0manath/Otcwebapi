@@ -28,18 +28,4 @@ public class ReportController : ControllerBase
             return StatusCode(500, new { message = ex.Message });
         }
     }
-
-    [HttpPost("franchises")]
-    public async Task<IActionResult> GetFranchises()
-    {
-        try
-        {
-            var data = await _reportService.GetFranchisesAsync();
-            return Ok(data);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = ex.Message });
-        }
-    }
 }

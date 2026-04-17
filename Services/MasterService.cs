@@ -67,7 +67,7 @@ namespace OTC.Api.Services
             parameters.Add("@EmailID", custodian.EmailId);
             parameters.Add("@LocationName", custodian.LocationId);
             parameters.Add("@FranschiseName", custodian.FranchiseId);
-            parameters.Add("@IEMI_No", custodian.TouchKeyId); // txtIEMI_No in legacy
+            parameters.Add("@IEMI_No", custodian.IemiNo);
             parameters.Add("@AccessFrom", custodian.AccessFrom);
             parameters.Add("@AccessTo", custodian.AccessTo);
             parameters.Add("@Zomname", custodian.ZomId);
@@ -156,13 +156,26 @@ namespace OTC.Api.Services
             parameters.Add("@CustodianInfo", dbType: DbType.String, direction: ParameterDirection.Output, size: -1);
 
             var atm = await connection.QueryFirstOrDefaultAsync<AtmMaster>("usp_FillATMDetails", parameters, commandType: CommandType.StoredProcedure);
-            // Note: CustodianInfo is complex in legacy (delimited string), handle parsing in frontend or here if needed.
+            
+            if (atm != null)
+            {
+                // Fetch mapped custodians from mapping table
+                var mappings = await connection.QueryAsync<string>("SELECT CustodianCode FROM CustodianMapping WHERE EquipId = @atmId", new { atmId });
+                var mappingList = mappings.AsList();
+                if (mappingList.Count > 0) atm.Custodian1 = mappingList[0];
+                if (mappingList.Count > 1) atm.Custodian2 = mappingList[1];
+                if (mappingList.Count > 2) atm.Custodian3 = mappingList[2];
+            }
+
             return atm;
         }
 
         public async Task<string> SaveAtmAsync(AtmMaster atm, string userName)
         {
             using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            using var transaction = connection.BeginTransaction();
+
             var parameters = new DynamicParameters();
             
             parameters.Add("@EquipId", atm.AtmId);
@@ -180,7 +193,7 @@ namespace OTC.Api.Services
             parameters.Add("@Longitude", atm.Longitude);
             parameters.Add("@FranchiseCode", atm.Franchise);
             parameters.Add("@ZomCode", atm.Zom);
-            parameters.Add("@Custodian", DBNull.Value); // Legacy handles mapping via separate logic usually
+            parameters.Add("@Custodian", DBNull.Value);
             parameters.Add("@Siteid", atm.SiteId);
             parameters.Add("@Bank", atm.Bank);
             parameters.Add("@Site", atm.Site);
@@ -192,21 +205,47 @@ namespace OTC.Api.Services
             parameters.Add("@Address", atm.Address);
             parameters.Add("@CreatedBy", userName);
             parameters.Add("@ModifiedBy", userName);
-            parameters.Add("@Utype", "Admin"); // Default
+            parameters.Add("@Utype", "Admin");
             parameters.Add("@Ucode", userName);
-            parameters.Add("@Module", "Insert"); // Logic to check if exists can be added
             parameters.Add("@geotag", "0");
             parameters.Add("@RouteKey", atm.RouteKey);
             parameters.Add("@CROType", "0");
             parameters.Add("@Bulkzom", "0");
 
+            // Logic to check if update or insert
+            bool exists = await connection.ExecuteScalarAsync<bool>("SELECT COUNT(1) FROM Purchase WHERE EquipId = @atmId", new { atmId = atm.AtmId }, transaction);
+            parameters.Add("@Module", exists ? "Update" : "Insert");
+
             try
             {
-                await connection.ExecuteAsync("sp_ATMmastV1", parameters, commandType: CommandType.StoredProcedure);
+                // 1. Save core ATM data
+                await connection.ExecuteAsync("sp_ATMmastV1", parameters, transaction, commandType: CommandType.StoredProcedure);
+
+                // 2. Handle Custodian Mapping
+                if (exists)
+                {
+                    // Archive existing mappings to history
+                    await connection.ExecuteAsync("INSERT INTO CustodianMapping_His SELECT Equipid, CustodianCode, GETDATE(), @userName FROM CustodianMapping WHERE EquipId = @atmId", new { atmId = atm.AtmId, userName }, transaction);
+                    // Clear existing mappings
+                    await connection.ExecuteAsync("DELETE FROM CustodianMapping WHERE EquipId = @atmId", new { atmId = atm.AtmId }, transaction);
+                }
+
+                // Insert new mappings
+                var custodians = new List<string> { atm.Custodian1, atm.Custodian2, atm.Custodian3 };
+                foreach (var custodianCode in custodians)
+                {
+                    if (!string.IsNullOrEmpty(custodianCode))
+                    {
+                        await connection.ExecuteAsync("INSERT INTO CustodianMapping (EquipId, CustodianCode) VALUES (@atmId, @custodianCode)", new { atmId = atm.AtmId, custodianCode }, transaction);
+                    }
+                }
+
+                await transaction.CommitAsync();
                 return string.Empty;
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync();
                 return ex.Message;
             }
         }
@@ -245,10 +284,121 @@ namespace OTC.Api.Services
             return await connection.QueryAsync<MasterDropdownItem>("select slno as Id, state_name as Name from StateMaster order by state_name");
         }
 
-        public async Task<IEnumerable<MasterDropdownItem>> GetDistrictsByStateAsync(int stateId)
+        public async Task<IEnumerable<MasterDropdownItem>> GetCustodiansDropdownAsync()
         {
             using var connection = new SqlConnection(_connectionString);
-            return await connection.QueryAsync<MasterDropdownItem>("select district_id as Id, district_name as Name from districtmaster where state_id = @stateId order by district_name", new { stateId });
+            return await connection.QueryAsync<MasterDropdownItem>("SELECT CustodianCode as Id, CustodianName as Name FROM CustodianMaster ORDER BY CustodianName");
+        }
+
+        #endregion
+
+        #region State & District Management
+
+        public async Task<IEnumerable<StateMaster>> GetStatesAllAsync(string stateName = null)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var parameters = new DynamicParameters();
+            parameters.Add("@StateName", string.IsNullOrEmpty(stateName) ? (object)DBNull.Value : stateName);
+            
+            // Legacy GetStateMaster SP
+            return await connection.QueryAsync<StateMaster>("GetStateMaster", parameters, commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<StateMaster?> GetStateByIdAsync(int id)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var parameters = new DynamicParameters();
+            parameters.Add("@stateId", id);
+            
+            return await connection.QueryFirstOrDefaultAsync<StateMaster>("GetStateMasterById", parameters, commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<string> SaveStateAsync(StateMaster state, string userName)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var parameters = new DynamicParameters();
+            
+            bool isUpdate = state.Id > 0;
+            string spName = isUpdate ? "Proc_UpdateState" : "Proc_InsertState";
+            
+            if (isUpdate)
+            {
+                parameters.Add("@slno", state.Id);
+            }
+            parameters.Add("@StateName", state.StateName);
+            parameters.Add("@roCode", state.RegionCode);
+
+            try
+            {
+                if (isUpdate)
+                {
+                    var message = await connection.ExecuteScalarAsync<string>(spName, parameters, commandType: CommandType.StoredProcedure);
+                    if (message != null && (message.Contains("Successfully") || message.Contains("Updated"))) return string.Empty;
+                    return message ?? "Update failed without error message.";
+                }
+                else
+                {
+                    await connection.ExecuteAsync(spName, parameters, commandType: CommandType.StoredProcedure);
+                    return string.Empty;
+                }
+            }
+            catch (SqlException ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public async Task<IEnumerable<DistrictMaster>> GetDistrictsAllAsync(string districtName = null, int? stateId = null)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var parameters = new DynamicParameters();
+            parameters.Add("@district_name", string.IsNullOrEmpty(districtName) ? (object)DBNull.Value : districtName);
+            parameters.Add("@state_id", stateId ?? 0);
+            
+            return await connection.QueryAsync<DistrictMaster>("Proc_GetDistricts", parameters, commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<DistrictMaster?> GetDistrictByIdAsync(int id)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var parameters = new DynamicParameters();
+            parameters.Add("@districtSlno", id);
+            
+            return await connection.QueryFirstOrDefaultAsync<DistrictMaster>("Proc_GetDistrictById", parameters, commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<string> SaveDistrictAsync(DistrictMaster district, string userName)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var parameters = new DynamicParameters();
+            
+            bool isUpdate = district.Id > 0;
+            string spName = isUpdate ? "Proc_UpdateDistrict" : "Proc_InsertDistrict";
+            
+            if (isUpdate)
+            {
+                parameters.Add("@districtSlNo", district.Id);
+            }
+            parameters.Add("@district_name", district.DistrictName);
+            parameters.Add("@state_id", district.StateId);
+            parameters.Add("@created_by", userName);
+
+            try
+            {
+                var message = await connection.ExecuteScalarAsync<string>(spName, parameters, commandType: CommandType.StoredProcedure);
+                if (message != null && (message.Contains("Successfully") || message.Contains("Updated") || message.Contains("Inserted"))) return string.Empty;
+                return message ?? "Operation failed without error message.";
+            }
+            catch (SqlException ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public async Task<IEnumerable<MasterDropdownItem>> GetRegionsAsync()
+        {
+            using var connection = new SqlConnection(_connectionString);
+            return await connection.QueryAsync<MasterDropdownItem>("Sp_GetRegion", commandType: CommandType.StoredProcedure);
         }
 
         #endregion

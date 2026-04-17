@@ -54,7 +54,7 @@ public class RouteService : IRouteService
             //parameters.Add("@Value", string.IsNullOrEmpty(searchValue) ? DBNull.Value : searchValue);
             parameters.Add("@Username", username);
 
-            return await connection.QueryAsync<RouteListItem>(
+            var data = await connection.QueryAsync<RouteListItem>(
                 "India1_USP_FillRouteConfig",
                 parameters,
                 commandType: CommandType.StoredProcedure
@@ -133,17 +133,16 @@ public class RouteService : IRouteService
             await connection.OpenAsync();
             string sql = @"
                 select 
+                    atm_schedule.Schedule_Id as Id,
                     atm_schedule.Schedule_Id as ScheduleId,
-                    ATMID as AtmId,
-                    Activity_Type as ActivityType,
-                    rm.Routekey as RouteKey, 
-                    c1.CustodianCode as Custodian1,
-                    c2.CustodianCode as Custodian2
+                    atm_schedule.ATMID as AtmId,
+                    atm_schedule.Activity_Type as ActivityType,
+                    RouteConfig.RouteConfig_Id as RouteId,
+                    RouteConfig.RouteKey as RouteKey, 
+                    RouteConfig.Custodian1 as Custodian1,
+                    RouteConfig.Custodian2 as Custodian2
                 from atm_schedule 
-                left join RouteConfig on ATM_Schedule.Schedule_Id = RouteConfig.Schedule_Id 
-                left join CustodianMaster c1 on c1.CustodianCode = RouteConfig.Custodian1 
-                left join RouteMaster rm on c1.CustodianID = rm.CustodianID and c1.TouchKeyID = rm.TouchKeyID
-                left join CustodianMaster c2 on c2.CustodianCode = RouteConfig.Custodian2 
+                left join RouteConfig with (Nolock) on ATM_Schedule.Schedule_Id = RouteConfig.Schedule_Id 
                 where atm_schedule.Schedule_Id = @ScheduleId";
 
             return await connection.QueryFirstOrDefaultAsync<RouteListItem>(sql, new { ScheduleId = scheduleId });

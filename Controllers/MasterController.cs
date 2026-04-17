@@ -133,6 +133,66 @@ namespace OTC.Api.Controllers
         [HttpPost("dropdowns/districts")]
         public async Task<IActionResult> GetDistricts([FromBody] IdRequest request) => Ok(await _masterService.GetDistrictsByStateAsync(request.Id));
 
+        [HttpPost("dropdowns/custodians")]
+        public async Task<IActionResult> GetCustodiansDropdown() => Ok(await _masterService.GetCustodiansDropdownAsync());
+
+        #endregion
+
+        #region State & District Management
+
+        [HttpGet("states/all")]
+        public async Task<ActionResult<IEnumerable<StateMaster>>> GetStatesSearch([FromQuery] string name = null)
+        {
+            var result = await _masterService.GetStatesAllAsync(name);
+            return Ok(result);
+        }
+
+        [HttpGet("states/{id}")]
+        public async Task<ActionResult<StateMaster>> GetState(int id)
+        {
+            var result = await _masterService.GetStateByIdAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
+
+        [HttpPost("states")]
+        public async Task<ActionResult<string>> SaveState([FromBody] StateMaster state)
+        {
+            var result = await _masterService.SaveStateAsync(state, "admin");
+            if (string.IsNullOrEmpty(result)) return Ok(new { message = "State saved successfully" });
+            return BadRequest(new { error = result });
+        }
+
+        [HttpGet("districts/all")]
+        public async Task<ActionResult<IEnumerable<DistrictMaster>>> GetDistrictsSearch([FromQuery] string name = null, [FromQuery] int? stateId = null)
+        {
+            var result = await _masterService.GetDistrictsAllAsync(name, stateId);
+            return Ok(result);
+        }
+
+        [HttpGet("districts/{id}")]
+        public async Task<ActionResult<DistrictMaster>> GetDistrict(int id)
+        {
+            var result = await _masterService.GetDistrictByIdAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
+
+        [HttpPost("districts")]
+        public async Task<ActionResult<string>> SaveDistrict([FromBody] DistrictMaster district)
+        {
+            var result = await _masterService.SaveDistrictAsync(district, "admin");
+            if (string.IsNullOrEmpty(result)) return Ok(new { message = "District saved successfully" });
+            return BadRequest(new { error = result });
+        }
+
+        [HttpGet("dropdowns/regions")]
+        public async Task<ActionResult<IEnumerable<MasterDropdownItem>>> GetRegions()
+        {
+            var result = await _masterService.GetRegionsAsync();
+            return Ok(result);
+        }
+
         #endregion
     }
 }

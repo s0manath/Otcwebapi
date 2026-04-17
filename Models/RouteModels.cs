@@ -2,6 +2,7 @@ namespace OTC.Api.Models;
 
 public class RouteListItem
 {
+    public string Id { get; set; } = string.Empty;
     public string ScheduleId { get; set; } = string.Empty;
     public string RouteId { get; set; } = string.Empty;
     public string AtmId { get; set; } = string.Empty;
