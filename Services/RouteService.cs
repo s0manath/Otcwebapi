@@ -59,6 +59,8 @@ public class RouteService : IRouteService
                 parameters,
                 commandType: CommandType.StoredProcedure
             );
+            
+            return data.ToList();
         }
     }
 

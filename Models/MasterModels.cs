@@ -73,21 +73,6 @@ namespace OTC.Api.Models
         public bool IsActive { get; set; }
     }
 
-    public class StateMaster
-    {
-        public int Id { get; set; } // slno in DB
-        public string StateName { get; set; }
-        public string RegionCode { get; set; }
-        public string RegionName { get; set; }
-    }
-
-    public class DistrictMaster
-    {
-        public int Id { get; set; } // district_id in DB
-        public string DistrictName { get; set; }
-        public int StateId { get; set; }
-        public string StateName { get; set; }
-    }
 
     public class MasterDropdownItem
     {

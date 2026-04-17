@@ -284,6 +284,12 @@ namespace OTC.Api.Services
             return await connection.QueryAsync<MasterDropdownItem>("select slno as Id, state_name as Name from StateMaster order by state_name");
         }
 
+        public async Task<IEnumerable<MasterDropdownItem>> GetDistrictsByStateAsync(int stateId)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            return await connection.QueryAsync<MasterDropdownItem>("select slno as Id, district_name as Name from DistrictMaster where state_id = @stateId order by district_name", new { stateId });
+        }
+
         public async Task<IEnumerable<MasterDropdownItem>> GetCustodiansDropdownAsync()
         {
             using var connection = new SqlConnection(_connectionString);
@@ -326,7 +332,7 @@ namespace OTC.Api.Services
                 parameters.Add("@slno", state.Id);
             }
             parameters.Add("@StateName", state.StateName);
-            parameters.Add("@roCode", state.RegionCode);
+            parameters.Add("@roCode", state.RegionId);
 
             try
             {

@@ -58,10 +58,26 @@ public class LoginMasterService : ILoginMasterService
         });
     }
 
-    public Task<bool> SaveLoginAsync(LoginMasterRequest request)
+    public Task<List<LoginMasterListItem>> SearchCustodianLoginsAsync(LoginMasterSearchRequest request, string userName)
     {
-        // For now, just return true as it's a mock
-        return Task.FromResult(true);
+        // Mock implementation for now
+        return Task.FromResult(new List<LoginMasterListItem>());
+    }
+
+    public Task<string> SaveLoginAsync(LoginMasterRequest request, string createdBy)
+    {
+        // For now, just return empty as it's a mock
+        return Task.FromResult(string.Empty);
+    }
+
+    public Task<string> LockLoginAsync(string username, string lockedBy)
+    {
+        return Task.FromResult(string.Empty);
+    }
+
+    public Task<string> UnlockLoginAsync(string username)
+    {
+        return Task.FromResult(string.Empty);
     }
 
     public Task<List<HierarchyItem>> GetHierarchyAsync(string type, string? parentId = null)

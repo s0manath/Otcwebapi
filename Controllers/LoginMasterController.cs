@@ -33,7 +33,8 @@ public class LoginMasterController : ControllerBase
     [HttpPost("save")]
     public async Task<IActionResult> Save([FromBody] LoginMasterRequest request)
     {
-        var result = await _loginMasterService.SaveLoginAsync(request);
+        var userName = User.Identity?.Name ?? "Admin";
+        var result = await _loginMasterService.SaveLoginAsync(request, userName);
         return Ok(result);
     }
 
