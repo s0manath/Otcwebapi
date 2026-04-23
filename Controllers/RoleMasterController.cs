@@ -25,7 +25,7 @@ namespace OTC.Api.Controllers
         }
 
         [HttpPost("detail")]
-        public async Task<IActionResult> Get([FromBody] IdRequest request)
+        public async Task<IActionResult> Get([FromBody] LongIdRequest request)
         {
             var result = await _roleService.GetRoleBySlNoAsync(request.Id);
             if (result == null) return NotFound();

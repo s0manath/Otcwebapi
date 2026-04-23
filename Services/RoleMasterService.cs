@@ -24,13 +24,19 @@ namespace OTC.Api.Services
         public async Task<List<RoleMaster>> GetRolesAsync(RoleSearchRequest? request)
         {
             using var connection = new SqlConnection(_connectionString);
-            var data = await connection.QueryAsync<RoleMaster>("sp_get_roles_search", new 
+            var data = await connection.QueryAsync<dynamic>("sp_get_roles_search", new 
             { 
                 RoleName = string.IsNullOrEmpty(request?.RoleName) ? (object)DBNull.Value : request.RoleName, 
                 RoleStatus = (request == null || request.Status == null || request.Status == -1) ? (object)DBNull.Value : request.Status 
             }, commandType: CommandType.StoredProcedure);
 
-            return data.ToList();
+            return data.Select(item => new RoleMaster
+            {
+                SlNo = item.sl_no,
+                RoleName = item.role_name ?? "",
+                RoleDescription = item.role_description ?? "",
+                RoleStatus = item.role_status
+            }).ToList();
         }
 
         public async Task<RoleMaster?> GetRoleBySlNoAsync(long slNo)
