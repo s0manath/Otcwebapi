@@ -9,10 +9,14 @@ namespace OTC.Api.Models
         public string RoleName { get; set; }
         public string RoleDescription { get; set; }
         public int? RoleStatus { get; set; } // 1: Active, 0: Inactive
+        public int? RoleDepartment { get; set; }
+        public int? CoustodianNoneAvailable { get; set; }
         public List<ModuleAccess> Privileges { get; set; } = new List<ModuleAccess>();
         public List<ReportAccess> ReportPrivileges { get; set; } = new List<ReportAccess>();
         public DateTime? CreatedOn { get; set; }
-        public string CreatedBy { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public int? UpdatedBy { get; set; }
     }
 
     public class ModuleAccess

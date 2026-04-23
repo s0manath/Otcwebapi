@@ -16,13 +16,16 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromBody] EncryptedLoginRequest request)
     {
-        var response = await _loginService.ValidateLoginAsync(request);
+        string ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        var response = await _loginService.ValidateLoginAsync(request, ipAddress);
+        
         if (response.Success)
         {
             return Ok(response);
         }
+        
         return Unauthorized(response);
     }
 }

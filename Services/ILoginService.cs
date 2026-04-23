@@ -4,5 +4,5 @@ namespace OTC.Api.Services;
 
 public interface ILoginService
 {
-    Task<LoginResponse> ValidateLoginAsync(LoginRequest request);
+    Task<LoginResponse> ValidateLoginAsync(EncryptedLoginRequest request, string ipAddress);
 }
