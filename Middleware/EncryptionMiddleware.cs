@@ -51,7 +51,7 @@ public class EncryptionMiddleware
         }
     }
 
-    private async Task DecryptRequest(HttpContext context)
+    public async Task DecryptRequest(HttpContext context)
     {
         context.Request.EnableBuffering();
         using var reader = new StreamReader(context.Request.Body, Encoding.UTF8, leaveOpen: true);

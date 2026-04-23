@@ -28,4 +28,6 @@ public class ReportController : ControllerBase
             return StatusCode(500, new { message = ex.Message });
         }
     }
+
+   
 }

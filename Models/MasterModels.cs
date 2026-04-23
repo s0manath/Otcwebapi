@@ -70,6 +70,8 @@ namespace OTC.Api.Models
         public string Custodian2 { get; set; }
         public string Custodian3 { get; set; }
         public string RouteKey { get; set; }
+        public string District { get; set; }
+        public string CroType { get; set; }
         public bool IsActive { get; set; }
     }
 

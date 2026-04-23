@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -143,9 +144,12 @@ namespace OTC.Api.Services
         public async Task<IEnumerable<AtmMaster>> GetAtmsAsync()
         {
             using var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
             // Reusing the simple list query or direct SQL for ATM summary
-            string sql = "SELECT top 100 EquipId as AtmId, Aliasatmid as AliasAtmId, Bank, SiteID, Site, City, State, AtmStatus, FranchiseCode as Franchise FROM Purchase";
-            return await connection.QueryAsync<AtmMaster>(sql);
+            //string sql = "SELECT EquipId as AtmId, Aliasatmid as AliasAtmId, Bank, SiteID, Site, City, State, AtmStatus, FranchiseCode as Franchise FROM Purchase";
+            var parameters = new DynamicParameters();
+            parameters.Add("@Username", "Likhith");
+            return await connection.QueryAsync<AtmMaster>("India1_usp_GetATMData", parameters, commandType: CommandType.StoredProcedure);
         }
 
         public async Task<AtmMaster?> GetAtmByIdAsync(string atmId)
@@ -155,7 +159,7 @@ namespace OTC.Api.Services
             parameters.Add("@EquipId", atmId);
             parameters.Add("@CustodianInfo", dbType: DbType.String, direction: ParameterDirection.Output, size: -1);
 
-            var atm = await connection.QueryFirstOrDefaultAsync<AtmMaster>("usp_FillATMDetails", parameters, commandType: CommandType.StoredProcedure);
+            var atm = await connection.QueryFirstOrDefaultAsync<AtmMaster>("India1_usp_FillATMDetails", parameters, commandType: CommandType.StoredProcedure);
             
             if (atm != null)
             {
@@ -257,25 +261,25 @@ namespace OTC.Api.Services
         public async Task<IEnumerable<MasterDropdownItem>> GetLocationsAsync()
         {
             using var connection = new SqlConnection(_connectionString);
-            return await connection.QueryAsync<MasterDropdownItem>("sp_FillLocation", commandType: CommandType.StoredProcedure);
+            return await connection.QueryAsync<MasterDropdownItem>("India1_sp_FillLocation", commandType: CommandType.StoredProcedure);
         }
 
         public async Task<IEnumerable<MasterDropdownItem>> GetZomsAsync()
         {
             using var connection = new SqlConnection(_connectionString);
-            return await connection.QueryAsync<MasterDropdownItem>("Sp_GetZom", commandType: CommandType.StoredProcedure);
+            return await connection.QueryAsync<MasterDropdownItem>("India1_Sp_GetZom", commandType: CommandType.StoredProcedure);
         }
 
         public async Task<IEnumerable<MasterDropdownItem>> GetFranchiseDropdownAsync()
         {
             using var connection = new SqlConnection(_connectionString);
-            return await connection.QueryAsync<MasterDropdownItem>("Sp_GetFranchise", commandType: CommandType.StoredProcedure);
+            return await connection.QueryAsync<MasterDropdownItem>("India1_Sp_GetFranchise", commandType: CommandType.StoredProcedure);
         }
 
         public async Task<IEnumerable<MasterDropdownItem>> GetRouteKeysAsync()
         {
             using var connection = new SqlConnection(_connectionString);
-            return await connection.QueryAsync<MasterDropdownItem>("usp_FillRouteKey", commandType: CommandType.StoredProcedure);
+            return await connection.QueryAsync<MasterDropdownItem>("India1_usp_FillRouteKey", commandType: CommandType.StoredProcedure);
         }
 
         public async Task<IEnumerable<MasterDropdownItem>> GetStatesAsync()
@@ -300,23 +304,23 @@ namespace OTC.Api.Services
 
         #region State & District Management
 
-        public async Task<IEnumerable<StateMaster>> GetStatesAllAsync(string stateName = null)
+        public async Task<IEnumerable<State>> GetStatesAllAsync(string stateName = null)
         {
             using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();
-            parameters.Add("@StateName", string.IsNullOrEmpty(stateName) ? (object)DBNull.Value : stateName);
+            //parameters.Add("@StateName", string.IsNullOrEmpty(stateName) ? (object)DBNull.Value : stateName);
             
             // Legacy GetStateMaster SP
-            return await connection.QueryAsync<StateMaster>("GetStateMaster", parameters, commandType: CommandType.StoredProcedure);
+            return await connection.QueryAsync<State>("India1_GetStateMasterAll", parameters, commandType: CommandType.StoredProcedure);
         }
 
-        public async Task<StateMaster?> GetStateByIdAsync(int id)
+        public async Task<State?> GetStateByIdAsync(int id)
         {
             using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();
             parameters.Add("@stateId", id);
             
-            return await connection.QueryFirstOrDefaultAsync<StateMaster>("GetStateMasterById", parameters, commandType: CommandType.StoredProcedure);
+            return await connection.QueryFirstOrDefaultAsync<State>("India1_GetStateMasterById", parameters, commandType: CommandType.StoredProcedure);
         }
 
         public async Task<string> SaveStateAsync(StateMaster state, string userName)
@@ -354,14 +358,15 @@ namespace OTC.Api.Services
             }
         }
 
+        //complted change Sp Name and the 
         public async Task<IEnumerable<DistrictMaster>> GetDistrictsAllAsync(string districtName = null, int? stateId = null)
         {
             using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();
-            parameters.Add("@district_name", string.IsNullOrEmpty(districtName) ? (object)DBNull.Value : districtName);
-            parameters.Add("@state_id", stateId ?? 0);
+            parameters.Add("@district_name", districtName ?? string.Empty);
+            parameters.Add("@state_id", stateId ?? -1);
             
-            return await connection.QueryAsync<DistrictMaster>("Proc_GetDistricts", parameters, commandType: CommandType.StoredProcedure);
+            return await connection.QueryAsync<DistrictMaster>("India1_Proc_GetDistricts", parameters, commandType: CommandType.StoredProcedure);
         }
 
         public async Task<DistrictMaster?> GetDistrictByIdAsync(int id)
@@ -370,7 +375,7 @@ namespace OTC.Api.Services
             var parameters = new DynamicParameters();
             parameters.Add("@districtSlno", id);
             
-            return await connection.QueryFirstOrDefaultAsync<DistrictMaster>("Proc_GetDistrictById", parameters, commandType: CommandType.StoredProcedure);
+            return await connection.QueryFirstOrDefaultAsync<DistrictMaster>("India1_Proc_GetDistrictById", parameters, commandType: CommandType.StoredProcedure);
         }
 
         public async Task<string> SaveDistrictAsync(DistrictMaster district, string userName)
@@ -404,7 +409,7 @@ namespace OTC.Api.Services
         public async Task<IEnumerable<MasterDropdownItem>> GetRegionsAsync()
         {
             using var connection = new SqlConnection(_connectionString);
-            return await connection.QueryAsync<MasterDropdownItem>("Sp_GetRegion", commandType: CommandType.StoredProcedure);
+            return await connection.QueryAsync<MasterDropdownItem>("India1_Sp_GetRegion", commandType: CommandType.StoredProcedure);
         }
 
         #endregion

@@ -141,14 +141,14 @@ namespace OTC.Api.Controllers
         #region State & District Management
 
         [HttpGet("states/all")]
-        public async Task<ActionResult<IEnumerable<StateMaster>>> GetStatesSearch([FromQuery] string name = null)
+        public async Task<ActionResult<IEnumerable<State>>> GetStatesSearch([FromQuery] string name = null)
         {
             var result = await _masterService.GetStatesAllAsync(name);
             return Ok(result);
         }
 
         [HttpGet("states/{id}")]
-        public async Task<ActionResult<StateMaster>> GetState(int id)
+        public async Task<ActionResult<State>> GetState(int id)
         {
             var result = await _masterService.GetStateByIdAsync(id);
             if (result == null) return NotFound();

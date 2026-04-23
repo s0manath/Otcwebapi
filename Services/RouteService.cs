@@ -41,24 +41,9 @@ public class RouteService : IRouteService
 
             if (!string.IsNullOrEmpty(toDate)) parameters.Add("@DateTo", DateTime.Parse(toDate).Date.AddDays(1).AddSeconds(-1));
             else parameters.Add("@DateTo", DBNull.Value);
-
-            //parameters.Add("@Region", string.IsNullOrEmpty(region) ? DBNull.Value : region);
-            //parameters.Add("@Location", string.IsNullOrEmpty(district) ? DBNull.Value : district);
-            //parameters.Add("@Franchise", string.IsNullOrEmpty(franchise) ? DBNull.Value : franchise);
-            //parameters.Add("@ZOM", string.IsNullOrEmpty(zom) ? DBNull.Value : zom);
-            //parameters.Add("@ActivityType", string.IsNullOrEmpty(activityType) ? DBNull.Value : activityType);
-            //parameters.Add("@FilterStatus", string.IsNullOrEmpty(status) ? DBNull.Value : status);
-            //parameters.Add("@ChkConfig", string.IsNullOrEmpty(chkConfig) ? DBNull.Value : chkConfig);
-            //parameters.Add("@Field", string.IsNullOrEmpty(searchField) ? DBNull.Value : searchField);
-            //parameters.Add("@Criteria", string.IsNullOrEmpty(criteria) ? DBNull.Value : criteria);
-            //parameters.Add("@Value", string.IsNullOrEmpty(searchValue) ? DBNull.Value : searchValue);
             parameters.Add("@Username", username);
 
-            var data = await connection.QueryAsync<RouteListItem>(
-                "India1_USP_FillRouteConfig",
-                parameters,
-                commandType: CommandType.StoredProcedure
-            );
+            var data = await connection.QueryAsync<RouteListItem>("India1_USP_FillRouteConfig",parameters,commandType: CommandType.StoredProcedure);
             
             return data.ToList();
         }
@@ -82,19 +67,11 @@ public class RouteService : IRouteService
 
     public async Task<IEnumerable<CustodianListItem>> GetCustodiansAsync(string scheduleId)
     {
-        using (var connection = new SqlConnection(_connectionString))
-        {
-            await connection.OpenAsync();
-            string sql = @"
-                select CustodianMaster.CustodianName, CustodianMaster.CustodianCode 
-                from ATM_Schedule 
-                inner join CustodianMapping on CustodianMapping.EquipId = ATM_Schedule.ATMID  
-                inner join CustodianMaster on CustodianMaster.CustodianCode = CustodianMapping.CustodianCode  
-                INNER JOIN RouteMaster ON RouteMaster.CustodianID = CustodianMaster.CustodianID AND RouteMaster.TouchKeyID = CustodianMaster.TouchKeyID 
-                where (lockflg is null or lockflg='' or lockflg=0) and Schedule_Id = @ScheduleId";
 
-            return await connection.QueryAsync<CustodianListItem>(sql, new { ScheduleId = scheduleId });
-        }
+        using var connection = new SqlConnection(_connectionString);
+
+        return await connection.QueryAsync<CustodianListItem>("dbo.GetCustodiansByScheduleId",new { ScheduleId = scheduleId },commandType: CommandType.StoredProcedure);
+
     }
 
     public async Task<bool> SaveRouteAsync(RouteSaveRequest request)

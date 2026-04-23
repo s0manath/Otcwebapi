@@ -31,8 +31,8 @@ namespace OTC.Api.Services
         Task<IEnumerable<MasterDropdownItem>> GetCustodiansDropdownAsync();
 
         // State & District Management
-        Task<IEnumerable<StateMaster>> GetStatesAllAsync(string stateName = null);
-        Task<StateMaster?> GetStateByIdAsync(int id);
+        Task<IEnumerable<State>> GetStatesAllAsync(string stateName = null);
+        Task<State?> GetStateByIdAsync(int id);
         Task<string> SaveStateAsync(StateMaster state, string userName);
         
         Task<IEnumerable<DistrictMaster>> GetDistrictsAllAsync(string districtName = null, int? stateId = null);

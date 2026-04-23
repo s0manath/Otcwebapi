@@ -144,10 +144,11 @@ D:\newOTCDevlopment\otcapi\otcapi\obj\Debug\net10.0\staticwebassets.build.json.c
 D:\newOTCDevlopment\otcapi\otcapi\obj\Debug\net10.0\staticwebassets.development.json
 D:\newOTCDevlopment\otcapi\otcapi\obj\Debug\net10.0\staticwebassets.build.endpoints.json
 D:\newOTCDevlopment\otcapi\otcapi\obj\Debug\net10.0\swae.build.ex.cache
-D:\newOTCDevlopment\otcapi\otcapi\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 D:\newOTCDevlopment\otcapi\otcapi\obj\Debug\net10.0\OTC.Api.csproj.Up2Date
 D:\newOTCDevlopment\otcapi\otcapi\obj\Debug\net10.0\OTC.Api.dll
 D:\newOTCDevlopment\otcapi\otcapi\obj\Debug\net10.0\refint\OTC.Api.dll
 D:\newOTCDevlopment\otcapi\otcapi\obj\Debug\net10.0\OTC.Api.pdb
 D:\newOTCDevlopment\otcapi\otcapi\obj\Debug\net10.0\OTC.Api.genruntimeconfig.cache
 D:\newOTCDevlopment\otcapi\otcapi\obj\Debug\net10.0\ref\OTC.Api.dll
+D:\newOTCDevlopment\otcapi\otcapi\bin\Debug\net10.0\dotnet-tools.json
+D:\newOTCDevlopment\otcapi\otcapi\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

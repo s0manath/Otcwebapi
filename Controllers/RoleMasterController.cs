@@ -17,17 +17,17 @@ namespace OTC.Api.Controllers
             _roleService = roleService;
         }
 
-        [HttpPost("search")]
-        public async Task<IActionResult> Search([FromBody] RoleSearchRequest request)
+        [HttpGet("roles")]
+        public async Task<IActionResult> Search()
         {
-            var result = await _roleService.GetRolesAsync(request);
+            var result = await _roleService.GetRolesAsync();
             return Ok(result);
         }
 
         [HttpPost("detail")]
-        public async Task<IActionResult> Get([FromBody] LongIdRequest request)
+        public async Task<IActionResult> Get([FromBody] NameRequest request)
         {
-            var result = await _roleService.GetRoleByIdAsync(request.Id);
+            var result = await _roleService.GetRoleByIdAsync(request.Name);
             if (result == null) return NotFound();
             return Ok(result);
         }

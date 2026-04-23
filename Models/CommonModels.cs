@@ -19,4 +19,9 @@ namespace OTC.Api.Models
     {
         public string Query { get; set; } = string.Empty;
     }
+
+    public class NameRequest
+    {
+        public string  Name { get; set; }
+    }
 }

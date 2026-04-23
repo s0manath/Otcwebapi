@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OTC.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e2391c4145a829df3d0dffa2c1d8f0fe7e7b5ed0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+722e5c3df8e346e1ad3b8706175c60c345c92de8")]
 [assembly: System.Reflection.AssemblyProductAttribute("OTC.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OTC.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

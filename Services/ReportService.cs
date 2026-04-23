@@ -19,12 +19,12 @@ public class ReportService : IReportService
     {
         return reportType.ToLower() switch
         {
-            "scheduled" => "xxx",
-            "route-details" => "xxx",
-            "otc-checkout" => "xxx",
-            "atm-detail" => "xxx",
-            "custodian-wise" => "xxx",
-            "otc-reset" => "xxx",
+            "scheduled" => "India1_sp_GetScheduledDetailReport",
+            "route-details" => "India1_sp_GetRouteConfigureDetailsReport",
+            "otc-checkout" => "India1_Sp_getotccheckoutreport",
+            "atm-detail" => "India1_sp_GetATMDetailReport",
+            "custodian-wise" => "India1_sp_GetCustodianWiseReport",
+            "otc-reset" => "India1_sp_GetOtcResetReport",
             "otc-activity" => "sp_GetOTCActivityDetailReport",
             "audit" => "usp_GetAuditLog_Diff_ByDate_OneRow",
             _ => throw new Exception($"Report type '{reportType}' not supported.")

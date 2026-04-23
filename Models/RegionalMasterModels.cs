@@ -38,4 +38,12 @@ namespace OTC.Api.Models
         public int? ParentId { get; set; }
         public bool? IsActive { get; set; }
     }
+
+    public class State
+    {
+        public int Id { get; set; }
+        public string StateName { get; set; }
+        public string RegionId { get; set; }
+        public string RegionName { get; set; }
+    }
 }
