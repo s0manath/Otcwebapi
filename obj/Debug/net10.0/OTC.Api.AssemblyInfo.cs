@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OTC.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c27276c6b02f5ca7d650f544fe138ed347873b38")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+85065086ddc1bf4b1986ce2bd4cdd923aca1a4da")]
 [assembly: System.Reflection.AssemblyProductAttribute("OTC.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OTC.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
