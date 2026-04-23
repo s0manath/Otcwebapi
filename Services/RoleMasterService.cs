@@ -21,13 +21,13 @@ namespace OTC.Api.Services
            ?? throw new Exception("Connection string 'DefaultConnection' not found in configuration.");
         }
 
-        public async Task<List<RoleMaster>> GetRolesAsync(RoleSearchRequest request)
+        public async Task<List<RoleMaster>> GetRolesAsync(RoleSearchRequest? request)
         {
             using var connection = new SqlConnection(_connectionString);
             var data = await connection.QueryAsync<RoleMaster>("sp_get_roles_search", new 
             { 
                 RoleName = string.IsNullOrEmpty(request?.RoleName) ? (object)DBNull.Value : request.RoleName, 
-                RoleStatus = request?.Status == -1 ? (object)DBNull.Value : request?.Status 
+                RoleStatus = (request == null || request.Status == null || request.Status == -1) ? (object)DBNull.Value : request.Status 
             }, commandType: CommandType.StoredProcedure);
 
             return data.ToList();
