@@ -31,9 +31,7 @@ public class HierarchyItem
 
 public class LoginMasterSearchRequest
 {
-    public string? Field { get; set; }
-    public string? StartWith { get; set; }
-    public bool LockedUser { get; set; }
+    public string? SearchTerm { get; set; }
 }
 
 public class HierarchyRequest

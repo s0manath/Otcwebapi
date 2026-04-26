@@ -1,117 +1,186 @@
+using System.Data;
+using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using OTC.Api.Models;
 
 namespace OTC.Api.Services;
 
 public class LoginMasterService : ILoginMasterService
 {
-    private static readonly List<LoginMasterListItem> _mockLogins = new()
+    private readonly string _connectionString;
+
+    public LoginMasterService(IConfiguration configuration)
     {
-        new LoginMasterListItem { Username = "admin", UserType = "Admin", Role = "Super Admin", Locked = false },
-        new LoginMasterListItem { Username = "user1", UserType = "User", Role = "Manager", Locked = true },
-    };
-
-    private static readonly List<HierarchyItem> _mockHierarchy = new()
-    {
-        new HierarchyItem { Id = "R1", Name = "North Region", ParentId = null },
-        new HierarchyItem { Id = "R2", Name = "South Region", ParentId = null },
-        new HierarchyItem { Id = "S1", Name = "Delhi", ParentId = "R1" },
-        new HierarchyItem { Id = "S2", Name = "Punjab", ParentId = "R1" },
-        new HierarchyItem { Id = "S3", Name = "Tamil Nadu", ParentId = "R2" },
-        new HierarchyItem { Id = "S4", Name = "Kerala", ParentId = "R2" },
-        new HierarchyItem { Id = "D1", Name = "New Delhi", ParentId = "S1" },
-        new HierarchyItem { Id = "D2", Name = "Ludhiana", ParentId = "S2" },
-        new HierarchyItem { Id = "D3", Name = "Chennai", ParentId = "S3" },
-        new HierarchyItem { Id = "F1", Name = "Franchise 1", ParentId = "D1" },
-        new HierarchyItem { Id = "F2", Name = "Franchise 2", ParentId = "D3" },
-    };
-
-    public Task<List<LoginMasterListItem>> SearchLoginsAsync(LoginMasterSearchRequest request)
-    {
-        var result = _mockLogins.AsQueryable();
-
-        if (!string.IsNullOrEmpty(request.Field) && !string.IsNullOrEmpty(request.StartWith))
-        {
-            if (request.Field == "Uname")
-                result = result.Where(x => x.Username.StartsWith(request.StartWith, StringComparison.OrdinalIgnoreCase));
-            else if (request.Field == "Utype")
-                result = result.Where(x => x.UserType.StartsWith(request.StartWith, StringComparison.OrdinalIgnoreCase));
-        }
-
-        if (request.LockedUser)
-            result = result.Where(x => x.Locked);
-
-        return Task.FromResult(result.ToList());
+        _connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new Exception("Connection string 'DefaultConnection' not found.");
     }
 
-    public Task<LoginMasterRequest?> GetLoginByIdAsync(string username)
+    public async Task<List<LoginMasterListItem>> SearchLoginsAsync(LoginMasterSearchRequest request)
     {
-        var login = _mockLogins.FirstOrDefault(x => x.Username == username);
-        if (login == null) return Task.FromResult<LoginMasterRequest?>(null);
+        using var connection = new SqlConnection(_connectionString);
+        var sql = @"select uname as Username, utype as UserType, role_master.role_name as Role, 
+                    CAST(ISNULL(logmast.logflg, 0) AS BIT) as Locked 
+                    from logmast 
+                    inner join role_master with (Nolock) on logmast.rolecode=role_master.sl_no 
+                    where 1=1 and (utype='Admin' or utype='Auditor' or utype='Cash Team')";
 
-        return Task.FromResult<LoginMasterRequest?>(new LoginMasterRequest
+        if (!string.IsNullOrEmpty(request.SearchTerm))
         {
-            Username = login.Username,
-            UserType = login.UserType,
-            Role = login.Role,
-            FullName = "Mock Full Name",
-            Email = "mock@example.com"
-        });
+            sql += " AND (uname LIKE @Term OR utype LIKE @Term OR role_master.role_name LIKE @Term)";
+        }
+        sql += " order by logmast.uname";
+
+        var param = new { Term = $"%{request.SearchTerm}%" };
+        var result = await connection.QueryAsync<LoginMasterListItem>(sql, param);
+        return result.ToList();
+    }
+
+    public async Task<LoginMasterRequest?> GetLoginByIdAsync(string username)
+    {
+        using var connection = new SqlConnection(_connectionString);
+        var sql = "select uname as Username, fullname as FullName, rolecode as Role, email as Email, utype as UserType from logmast where uname = @username";
+        var login = await connection.QueryFirstOrDefaultAsync<LoginMasterRequest>(sql, new { username });
+        return login;
     }
 
     public Task<List<LoginMasterListItem>> SearchCustodianLoginsAsync(LoginMasterSearchRequest request, string userName)
     {
-        // Mock implementation for now
         return Task.FromResult(new List<LoginMasterListItem>());
     }
 
-    public Task<string> SaveLoginAsync(LoginMasterRequest request, string createdBy)
+    public async Task<string> SaveLoginAsync(LoginMasterRequest request, string createdBy)
     {
-        // For now, just return empty as it's a mock
-        return Task.FromResult(string.Empty);
-    }
+        using var connection = new SqlConnection(_connectionString);
+        var parameters = new DynamicParameters();
+        
+        bool exists = await connection.ExecuteScalarAsync<bool>("SELECT COUNT(1) FROM logmast WHERE uname = @Username", new { request.Username });
+        string spName = exists ? "Sp_Logmast" : "Proc_InsertUpdateLogmast";
 
-    public Task<string> LockLoginAsync(string username, string lockedBy)
-    {
-        return Task.FromResult(string.Empty);
-    }
-
-    public Task<string> UnlockLoginAsync(string username)
-    {
-        return Task.FromResult(string.Empty);
-    }
-
-    public Task<List<HierarchyItem>> GetHierarchyAsync(string type, string? parentId = null)
-    {
-        IEnumerable<HierarchyItem> result = _mockHierarchy;
-
-        switch (type.ToLower())
+        if (exists)
         {
-            case "region":
-                result = result.Where(x => x.ParentId == null);
-                break;
-            case "state":
-                if (!string.IsNullOrEmpty(parentId))
-                {
-                    var parentIds = parentId.Split(',');
-                    result = result.Where(x => parentIds.Contains(x.ParentId));
-                }
-                break;
-            case "district":
-                if (!string.IsNullOrEmpty(parentId))
-                {
-                    var parentIds = parentId.Split(',');
-                    result = result.Where(x => parentIds.Contains(x.ParentId));
-                }
-                break;
-            case "franchise":
-                if (!string.IsNullOrEmpty(parentId))
-                {
-                    var parentIds = parentId.Split(',');
-                    result = result.Where(x => parentIds.Contains(x.ParentId));
-                }
-                break;
+            parameters.Add("@Username", request.Username);
+            parameters.Add("@fullname", request.FullName);
+            parameters.Add("@password", request.Password);
+            parameters.Add("@Utype", request.UserType);
+            parameters.Add("@rolecode", request.Role);
+            parameters.Add("@glist", "");
+            parameters.Add("@grp", "");
+            parameters.Add("@createdby", createdBy);
+            parameters.Add("@Regioncode", string.Join(",", request.SelectedRegions));
+            parameters.Add("@Locationcode", "");
+            parameters.Add("@BankCode", "");
+            parameters.Add("@Module", "Update");
+            parameters.Add("@IsMobileUser", "0");
+            parameters.Add("@Email", request.Email);
+            
+            try
+            {
+                await connection.ExecuteAsync(spName, parameters, commandType: CommandType.StoredProcedure);
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        else
+        {
+            parameters.Add("@Username", request.Username);
+            parameters.Add("@fullname", request.FullName);
+            parameters.Add("@password", request.Password);
+            parameters.Add("@Utype", request.UserType);
+            parameters.Add("@Ulist", request.Role ?? "");
+            parameters.Add("@glist", "");
+            parameters.Add("@grp", "");
+            parameters.Add("@rolecode", request.Role);
+            parameters.Add("@createdby", createdBy);
+            parameters.Add("@Regioncode", string.Join(",", request.SelectedRegions));
+            parameters.Add("@Locationcode", "");
+            parameters.Add("@BankCode", "");
+            parameters.Add("@Module", "Insert");
+            parameters.Add("@IsMobileUser", "0");
+            parameters.Add("@Email", request.Email);
+            
+            var userIdParam = new SqlParameter("@NewUserId", SqlDbType.Int) { Direction = ParameterDirection.Output };
+            parameters.Add("@NewUserId", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+            try
+            {
+                await connection.ExecuteAsync(spName, parameters, commandType: CommandType.StoredProcedure);
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+    }
+
+    public async Task<string> LockLoginAsync(string username, string lockedBy)
+    {
+        using var connection = new SqlConnection(_connectionString);
+        var sql = "Update LogMast set lastmodifieddate=getdate(),logflg=1,LockedBy=@lockedBy,LockedDate=getdate() where Uname=@username";
+        try
+        {
+            await connection.ExecuteAsync(sql, new { username, lockedBy });
+            return string.Empty;
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
+    public async Task<string> UnlockLoginAsync(string username)
+    {
+        using var connection = new SqlConnection(_connectionString);
+        var sql = "Update LogMast set lastmodifieddate=getdate(),logflg=null,logattempt=null,Locked=null where Uname=@username";
+        try
+        {
+            await connection.ExecuteAsync(sql, new { username });
+            return string.Empty;
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
+
+    public async Task<List<HierarchyItem>> GetHierarchyAsync(string type, string? parentId = null)
+    {
+        using var connection = new SqlConnection(_connectionString);
+        var parameters = new DynamicParameters();
+        
+        try
+        {
+            switch (type.ToLower())
+            {
+                case "region":
+                    var regions = await connection.QueryAsync<dynamic>("select RoCode, RoName from ROMast order by RoName");
+                    return regions.Select(x => new HierarchyItem { Id = x.RoCode?.ToString() ?? "", Name = x.RoName?.ToString() ?? "" }).ToList();
+                
+                case "state":
+                    parameters.Add("@regionIDs", parentId ?? "");
+                    var states = await connection.QueryAsync<dynamic>("Proc_GetStatesByRegion", parameters, commandType: CommandType.StoredProcedure);
+                    return states.Select(x => new HierarchyItem { Id = x.slno?.ToString() ?? "", Name = x.state_name?.ToString() ?? "" }).ToList();
+                
+                case "district":
+                    parameters.Add("@State", parentId ?? "");
+                    var districts = await connection.QueryAsync<dynamic>("Proc_GetDistrictsByState", parameters, commandType: CommandType.StoredProcedure);
+                    return districts.Select(x => new HierarchyItem { Id = x.district_id?.ToString() ?? "", Name = x.district_name?.ToString() ?? "" }).ToList();
+                
+                case "franchise":
+                    parameters.Add("@district", parentId ?? "");
+                    var franchises = await connection.QueryAsync<dynamic>("Proc_GetFranchiseByDistrict", parameters, commandType: CommandType.StoredProcedure);
+                    return franchises.Select(x => new HierarchyItem { Id = x.FranchiseCode?.ToString() ?? "", Name = x.FranchiseName?.ToString() ?? "" }).ToList();
+            }
+        }
+        catch
+        {
+            // Fallback for missing SPs
         }
 
-        return Task.FromResult(result.ToList());
+        return new List<HierarchyItem>();
     }
 }
