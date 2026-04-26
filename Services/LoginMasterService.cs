@@ -54,13 +54,13 @@ public class LoginMasterService : ILoginMasterService
                     login.SelectedRegions = regions.Select(r => ((IDictionary<string, object>)r).Values.First()?.ToString() ?? "").Where(s => !string.IsNullOrEmpty(s)).ToList();
 
                     var states = await connection.QueryAsync<dynamic>("Proc_GetUserStatesAccessByUser", new { UserId = userId.Value }, commandType: CommandType.StoredProcedure);
-                    login.SelectedStates = states.Select(s => ((IDictionary<string, object>)r).Values.First()?.ToString() ?? "").Where(s => !string.IsNullOrEmpty(s)).ToList();
+                    login.SelectedStates = states.Select(s => ((IDictionary<string, object>)s).Values.First()?.ToString() ?? "").Where(s => !string.IsNullOrEmpty(s)).ToList();
 
                     var districts = await connection.QueryAsync<dynamic>("Proc_GetUserDistrictsAccessByUser", new { UserId = userId.Value }, commandType: CommandType.StoredProcedure);
-                    login.SelectedDistricts = districts.Select(d => ((IDictionary<string, object>)r).Values.First()?.ToString() ?? "").Where(s => !string.IsNullOrEmpty(s)).ToList();
+                    login.SelectedDistricts = districts.Select(d => ((IDictionary<string, object>)d).Values.First()?.ToString() ?? "").Where(s => !string.IsNullOrEmpty(s)).ToList();
 
                     var franchises = await connection.QueryAsync<dynamic>("Proc_GetUserFranchisesAccessByUser", new { UserId = userId.Value }, commandType: CommandType.StoredProcedure);
-                    login.SelectedFranchises = franchises.Select(f => ((IDictionary<string, object>)r).Values.First()?.ToString() ?? "").Where(s => !string.IsNullOrEmpty(s)).ToList();
+                    login.SelectedFranchises = franchises.Select(f => ((IDictionary<string, object>)f).Values.First()?.ToString() ?? "").Where(s => !string.IsNullOrEmpty(s)).ToList();
                 }
             }
             catch { /* Ignore if SPs fail */ }
