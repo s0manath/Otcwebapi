@@ -41,6 +41,31 @@ public class LoginMasterService : ILoginMasterService
         using var connection = new SqlConnection(_connectionString);
         var sql = "select uname as Username, fullname as FullName, rolecode as Role, email as Email, utype as UserType from logmast where uname = @username";
         var login = await connection.QueryFirstOrDefaultAsync<LoginMasterRequest>(sql, new { username });
+        
+        if (login != null)
+        {
+            try
+            {
+                int? userId = await connection.ExecuteScalarAsync<int?>("Proc_GetUserIdByUsername", new { Username = username }, commandType: CommandType.StoredProcedure);
+                
+                if (userId.HasValue)
+                {
+                    var regions = await connection.QueryAsync<dynamic>("Proc_GetUserRegionsAccessByUser", new { UserId = userId.Value }, commandType: CommandType.StoredProcedure);
+                    login.SelectedRegions = regions.Select(r => ((IDictionary<string, object>)r).Values.First()?.ToString() ?? "").Where(s => !string.IsNullOrEmpty(s)).ToList();
+
+                    var states = await connection.QueryAsync<dynamic>("Proc_GetUserStatesAccessByUser", new { UserId = userId.Value }, commandType: CommandType.StoredProcedure);
+                    login.SelectedStates = states.Select(s => ((IDictionary<string, object>)r).Values.First()?.ToString() ?? "").Where(s => !string.IsNullOrEmpty(s)).ToList();
+
+                    var districts = await connection.QueryAsync<dynamic>("Proc_GetUserDistrictsAccessByUser", new { UserId = userId.Value }, commandType: CommandType.StoredProcedure);
+                    login.SelectedDistricts = districts.Select(d => ((IDictionary<string, object>)r).Values.First()?.ToString() ?? "").Where(s => !string.IsNullOrEmpty(s)).ToList();
+
+                    var franchises = await connection.QueryAsync<dynamic>("Proc_GetUserFranchisesAccessByUser", new { UserId = userId.Value }, commandType: CommandType.StoredProcedure);
+                    login.SelectedFranchises = franchises.Select(f => ((IDictionary<string, object>)r).Values.First()?.ToString() ?? "").Where(s => !string.IsNullOrEmpty(s)).ToList();
+                }
+            }
+            catch { /* Ignore if SPs fail */ }
+        }
+        
         return login;
     }
 
@@ -52,40 +77,14 @@ public class LoginMasterService : ILoginMasterService
     public async Task<string> SaveLoginAsync(LoginMasterRequest request, string createdBy)
     {
         using var connection = new SqlConnection(_connectionString);
-        var parameters = new DynamicParameters();
+        await connection.OpenAsync();
+        using var transaction = connection.BeginTransaction();
         
-        bool exists = await connection.ExecuteScalarAsync<bool>("SELECT COUNT(1) FROM logmast WHERE uname = @Username", new { request.Username });
-        string spName = exists ? "Sp_Logmast" : "Proc_InsertUpdateLogmast";
-
-        if (exists)
+        try
         {
-            parameters.Add("@Username", request.Username);
-            parameters.Add("@fullname", request.FullName);
-            parameters.Add("@password", request.Password);
-            parameters.Add("@Utype", request.UserType);
-            parameters.Add("@rolecode", request.Role);
-            parameters.Add("@glist", "");
-            parameters.Add("@grp", "");
-            parameters.Add("@createdby", createdBy);
-            parameters.Add("@Regioncode", string.Join(",", request.SelectedRegions));
-            parameters.Add("@Locationcode", "");
-            parameters.Add("@BankCode", "");
-            parameters.Add("@Module", "Update");
-            parameters.Add("@IsMobileUser", "0");
-            parameters.Add("@Email", request.Email);
+            bool exists = await connection.ExecuteScalarAsync<bool>("SELECT COUNT(1) FROM logmast WHERE uname = @Username", new { request.Username }, transaction);
             
-            try
-            {
-                await connection.ExecuteAsync(spName, parameters, commandType: CommandType.StoredProcedure);
-                return string.Empty;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
-        else
-        {
+            var parameters = new DynamicParameters();
             parameters.Add("@Username", request.Username);
             parameters.Add("@fullname", request.FullName);
             parameters.Add("@password", request.Password);
@@ -98,22 +97,53 @@ public class LoginMasterService : ILoginMasterService
             parameters.Add("@Regioncode", string.Join(",", request.SelectedRegions));
             parameters.Add("@Locationcode", "");
             parameters.Add("@BankCode", "");
-            parameters.Add("@Module", "Insert");
+            parameters.Add("@Module", exists ? "Update" : "Insert");
             parameters.Add("@IsMobileUser", "0");
             parameters.Add("@Email", request.Email);
             
-            var userIdParam = new SqlParameter("@NewUserId", SqlDbType.Int) { Direction = ParameterDirection.Output };
             parameters.Add("@NewUserId", dbType: DbType.Int32, direction: ParameterDirection.Output);
-
-            try
+            
+            await connection.ExecuteAsync("Proc_InsertUpdateLogmast", parameters, transaction, commandType: CommandType.StoredProcedure);
+            
+            int newUserId;
+            if (exists)
             {
-                await connection.ExecuteAsync(spName, parameters, commandType: CommandType.StoredProcedure);
-                return string.Empty;
+                newUserId = await connection.ExecuteScalarAsync<int>("Proc_GetUserIdByUsername", new { Username = request.Username }, transaction, commandType: CommandType.StoredProcedure);
+                
+                await connection.ExecuteAsync("DELETE FROM UserRegion_Access WHERE Userid = @userId", new { userId = newUserId }, transaction);
+                await connection.ExecuteAsync("DELETE FROM UserState_Access WHERE Userid = @userId", new { userId = newUserId }, transaction);
+                await connection.ExecuteAsync("DELETE FROM UserDistrict_Access WHERE Userid = @userId", new { userId = newUserId }, transaction);
+                await connection.ExecuteAsync("DELETE FROM UserFranchise_Access WHERE Userid = @userId", new { userId = newUserId }, transaction);
             }
-            catch (Exception ex)
+            else
             {
-                return ex.Message;
+                newUserId = parameters.Get<int>("@NewUserId");
             }
+            
+            foreach(var region in request.SelectedRegions)
+            {
+                await connection.ExecuteAsync("Proc_Insert_UserRegion_Access", new { userId = newUserId, roCode = region }, transaction, commandType: CommandType.StoredProcedure);
+            }
+            foreach(var state in request.SelectedStates)
+            {
+                await connection.ExecuteAsync("Insert_UserState_Access", new { userId = newUserId, stateId = state }, transaction, commandType: CommandType.StoredProcedure);
+            }
+            foreach(var district in request.SelectedDistricts)
+            {
+                await connection.ExecuteAsync("Insert_UserDistrict_Access", new { userId = newUserId, districtId = district }, transaction, commandType: CommandType.StoredProcedure);
+            }
+            foreach(var franchise in request.SelectedFranchises)
+            {
+                await connection.ExecuteAsync("Insert_UserFranchise_Access", new { userId = newUserId, franchiseeCode = franchise }, transaction, commandType: CommandType.StoredProcedure);
+            }
+            
+            transaction.Commit();
+            return string.Empty;
+        }
+        catch (Exception ex)
+        {
+            transaction.Rollback();
+            return ex.Message;
         }
     }
 
