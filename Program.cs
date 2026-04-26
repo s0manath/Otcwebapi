@@ -4,8 +4,9 @@ using OTC.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// -------------------- SERVICES --------------------
 builder.Services.AddControllers();
+
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
@@ -17,37 +18,48 @@ builder.Services.AddScoped<IRoleMasterService, RoleMasterService>();
 builder.Services.AddScoped<IRegionalMasterService, RegionalMasterService>();
 builder.Services.AddScoped<IAtmBulkUploadService, AtmBulkUploadService>();
 builder.Services.AddScoped<IAdminMasterService, AdminMasterService>();
-builder.Services.AddOpenApi();
+
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
     });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// -------------------- PIPELINE --------------------
 
-// app.UseHttpsRedirection();
+// If hosting under IIS virtual directory
+app.UsePathBase("/LMSOTCWEBAPP");
+
 app.UseCors("AllowAll");
-// app.UseMiddleware<EncryptionMiddleware>();
+
+app.UseRouting();
+
 app.UseAuthorization();
+
 app.MapControllers();
 
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+// -------------------- SWAGGER --------------------
+app.UseSwagger(c =>
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+    c.RouteTemplate = "swagger/{documentName}/swagger.json";
+});
+
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/LMSOTCWEBAPP/swagger/v1/swagger.json", "OTC API v1");
+    c.RoutePrefix = "swagger";
+});
+
+// -------------------- RUN --------------------
+app.Run();

@@ -17,7 +17,7 @@ namespace OTC.Api.Controllers
             _roleService = roleService;
         }
 
-        [HttpGet]
+        [HttpGet("list")]
         public async Task<IActionResult> GetRoles()
         {
             var result = await _roleService.GetRolesAsync(null);
