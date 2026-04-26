@@ -1,20 +1,56 @@
-
+# =========================
 # Visual Studio
+# =========================
 .vs/
-
-# Build output
-bin/
-obj/
-
-# User specific
-*.user
 *.suo
+*.user
 *.userosscache
 *.sln.docstates
 
+# =========================
+# Build Output
+# =========================
+bin/
+obj/
+Debug/
+Release/
+*.dll
+*.exe
+*.pdb
+
+# =========================
 # Logs
+# =========================
 *.log
 
-# OS
+# =========================
+# OS Files
+# =========================
 Thumbs.db
 .DS_Store
+
+# =========================
+# NuGet
+# =========================
+*.nupkg
+packages/
+!packages/build/
+.nuget/
+
+# =========================
+# Rider / VS Code (optional)
+# =========================
+.idea/
+.vscode/
+
+# =========================
+# IIS / Publish
+# =========================
+publish/
+wwwroot/dist/
+
+# =========================
+# Environment files
+# =========================
+appsettings.Development.json
+.env
