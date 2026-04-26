@@ -8,7 +8,7 @@ namespace OTC.Api.Models
         public long SlNo { get; set; }
         public string RoleName { get; set; }
         public string RoleDescription { get; set; }
-        public int? RoleStatus { get; set; } // 1: Active, 0: Inactive
+        public string? RoleStatus { get; set; } // 1: Active, 0: Inactive
         public int? RoleDepartment { get; set; }
         public int? CoustodianNoneAvailable { get; set; }
         public List<ModuleAccess> Privileges { get; set; } = new List<ModuleAccess>();

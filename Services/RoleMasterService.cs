@@ -56,7 +56,7 @@ namespace OTC.Api.Services
                 RoleName = result.role_name,
                 RoleDescription = result.role_description,
                 RoleDepartment = result.role_department,
-                RoleStatus = result.role_status,
+                RoleStatus = result.role_status?.ToString(),
                 CoustodianNoneAvailable = result.CoustodianNoneAvailable,
                 CreatedOn = result.created_on,
                 CreatedBy = result.created_by,
@@ -64,21 +64,26 @@ namespace OTC.Api.Services
                 UpdatedBy = result.updated_by
             };
 
-            var modulesJson = result.role_modules_access as string;
+            var modulesJson = result.role_modules_access?.ToString();
             if (!string.IsNullOrEmpty(modulesJson))
             {
-                role.Privileges = JsonSerializer.Deserialize<List<ModuleAccess>>(modulesJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<ModuleAccess>();
+                role.Privileges = JsonSerializer.Deserialize<List<ModuleAccess>>(
+                    modulesJson,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                ) ?? new List<ModuleAccess>();
             }
 
-            var reportsJson = result.role_reports_access as string;
+            var reportsJson = result.role_reports_access?.ToString();
             if (!string.IsNullOrEmpty(reportsJson))
             {
-                role.ReportPrivileges = JsonSerializer.Deserialize<List<ReportAccess>>(reportsJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<ReportAccess>();
+                role.ReportPrivileges = JsonSerializer.Deserialize<List<ReportAccess>>(
+                    reportsJson,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                ) ?? new List<ReportAccess>();
             }
 
             return role;
         }
-
         public async Task<string> SaveRoleAsync(RoleMaster role)
         {
             using var connection = new SqlConnection(_connectionString);
