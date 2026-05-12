@@ -39,3 +39,18 @@ public class HierarchyRequest
     public string Type { get; set; } = string.Empty;
     public string? ParentId { get; set; }
 }
+
+
+
+public class  UserType
+{
+
+    public string Name { get; set; }
+}
+
+
+public class UserRole
+{
+    public int ? Id { get; set; }   
+    public string? Name { get; set; }
+}

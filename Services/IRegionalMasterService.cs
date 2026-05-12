@@ -17,8 +17,8 @@ namespace OTC.Api.Services
         Task<bool> SaveDistrictAsync(DistrictMaster district);
 
         // ZOMs
-        Task<List<ZomMaster>> GetZomsAsync(RegionalSearchRequest request);
-        Task<ZomMaster?> GetZomByIdAsync(int id);
-        Task<bool> SaveZomAsync(ZomMaster zom);
+        //Task<List<ZomMaster>> GetZomsAsync(RegionalSearchRequest request);
+        //Task<ZomMaster?> GetZomByIdAsync(int id);
+        //Task<bool> SaveZomAsync(ZomMaster zom);
     }
 }

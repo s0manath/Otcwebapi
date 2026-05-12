@@ -2,32 +2,12 @@ using System;
 
 namespace OTC.Api.Models
 {
-    public class CustodianMaster
-    {
-        public int Id { get; set; }
-        public string CustodianName { get; set; }
-        public string MobileNumber { get; set; }
-        public string EmailId { get; set; }
-        public int? LocationId { get; set; }
-        public string LocationName { get; set; }
-        public int? ZomId { get; set; }
-        public string ZomName { get; set; }
-        public int? FranchiseId { get; set; }
-        public string FranchiseName { get; set; }
-        public int? RouteKeyId { get; set; }
-        public string RouteKeyName { get; set; }
-        public string TouchKeyId { get; set; }
-        public string CustodianCode { get; set; } // txtcid in legacy
-        public DateTime? AccessFrom { get; set; }
-        public DateTime? AccessTo { get; set; }
-        public string IemiNo { get; set; }
-        public string ProfileImage { get; set; }
-        public bool IsActive { get; set; }
-    }
+
 
     public class FranchiseMaster
     {
         public int Id { get; set; }
+        public string FranchiseCode {  get; set; }
         public string FranchiseName { get; set; }
         public string MobileNumber { get; set; }
         public string EmailId { get; set; }
@@ -81,4 +61,6 @@ namespace OTC.Api.Models
         public string Id { get; set; }
         public string Name { get; set; }
     }
+
+
 }

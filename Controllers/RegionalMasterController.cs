@@ -38,13 +38,13 @@ namespace OTC.Api.Controllers
         public async Task<IActionResult> SaveDistrict([FromBody] DistrictMaster district) => Ok(await _regionalService.SaveDistrictAsync(district));
 
         // ZOMs
-        [HttpPost("zoms/search")]
-        public async Task<IActionResult> SearchZoms([FromBody] RegionalSearchRequest request) => Ok(await _regionalService.GetZomsAsync(request));
+        //[HttpPost("zoms/search")]
+        //public async Task<IActionResult> SearchZoms([FromBody] RegionalSearchRequest request) => Ok(await _regionalService.GetZomsAsync(request));
 
-        [HttpPost("zoms/detail")]
-        public async Task<IActionResult> GetZom([FromBody] IdRequest request) => Ok(await _regionalService.GetZomByIdAsync(request.Id));
+        //[HttpPost("zoms/detail")]
+        //public async Task<IActionResult> GetZom([FromBody] IdRequest request) => Ok(await _regionalService.GetZomByIdAsync(request.Id));
 
-        [HttpPost("zoms/save")]
-        public async Task<IActionResult> SaveZom([FromBody] ZomMaster zom) => Ok(await _regionalService.SaveZomAsync(zom));
+        //[HttpPost("zoms/save")]
+        //public async Task<IActionResult> SaveZom([FromBody] ZomMaster zom) => Ok(await _regionalService.SaveZomAsync(zom));
     }
 }

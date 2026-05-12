@@ -13,7 +13,7 @@ namespace OTC.Api.Services
 
         // Franchise Master
         Task<IEnumerable<FranchiseMaster>> GetFranchisesAsync(string filterField = null, string filterValue = null);
-        Task<FranchiseMaster?> GetFranchiseByIdAsync(int id);
+        Task<FranchiseMaster?> GetFranchiseByIdAsync(string id);
         Task<string> SaveFranchiseAsync(FranchiseMaster franchise, string userName);
 
         // ATM Master

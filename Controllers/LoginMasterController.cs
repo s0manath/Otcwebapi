@@ -44,4 +44,20 @@ public class LoginMasterController : ControllerBase
         var result = await _loginMasterService.GetHierarchyAsync(request.Type, request.ParentId);
         return Ok(result);
     }
+
+
+    [HttpGet("userRole")]
+
+    public async Task<IActionResult> GetUserRole()
+    {
+        var result = await _loginMasterService.GetUserRole();
+        return Ok(result);
+    }
+    [HttpGet]
+    public async Task <IActionResult> GetUserType()
+    {
+        var result = await _loginMasterService.GetUserType();
+        return Ok(result);
+    }
+
 }

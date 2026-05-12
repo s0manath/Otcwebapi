@@ -1,23 +1,19 @@
 using OTC.Api.Services;
-using OTC.Api.Models;
-using OTC.Api.Middleware;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // -------------------- SERVICES --------------------
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<ILoginService, LoginService>();
-builder.Services.AddScoped<IDashboardService, DashboardService>();
-builder.Services.AddScoped<IScheduleService, ScheduleService>();
-builder.Services.AddScoped<IRouteService, RouteService>();
-builder.Services.AddScoped<IReportService, ReportService>();
-builder.Services.AddScoped<ILoginMasterService, LoginMasterService>();
-builder.Services.AddScoped<IMasterService, MasterService>();
-builder.Services.AddScoped<IRoleMasterService, RoleMasterService>();
-builder.Services.AddScoped<IRegionalMasterService, RegionalMasterService>();
-builder.Services.AddScoped<IAtmBulkUploadService, AtmBulkUploadService>();
-builder.Services.AddScoped<IAdminMasterService, AdminMasterService>();
+// -------------------- USING SCRUTER -----------------
+builder.Services.Scan(scan => scan
+    .FromAssemblyOf<Program>()
+    .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Service")))
+    .AsImplementedInterfaces()
+    .WithScopedLifetime());
+
+
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();

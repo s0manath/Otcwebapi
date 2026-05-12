@@ -67,7 +67,7 @@ namespace OTC.Api.Controllers
         }
 
         [HttpPost("franchises-detail")]
-        public async Task<IActionResult> GetFranchise([FromBody] IdRequest request)
+        public async Task<IActionResult> GetFranchise([FromBody] StringIdRequest request)
         {
             var result = await _masterService.GetFranchiseByIdAsync(request.Id);
             if (result == null) return NotFound();

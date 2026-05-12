@@ -213,4 +213,20 @@ public class LoginMasterService : ILoginMasterService
 
         return new List<HierarchyItem>();
     }
+
+    public async Task<IEnumerable<UserRole>> GetUserRole()
+    {
+        using var connection = new SqlConnection(_connectionString);
+        var sql = " select sl_no as Id ,role_name as Name from role_master";
+        return await connection.QueryAsync<UserRole>(sql);
+    }
+
+    public async Task <IEnumerable<UserType>> GetUserType()
+    {
+        using var connection = new SqlConnection(_connectionString);
+
+        var sql = "select RoleName as Name from RoleMast where RoleName not in('HO','Custodian','ZOM') order by RoleName asc";
+
+        return await connection.QueryAsync<UserType>(sql);
+    }
 }

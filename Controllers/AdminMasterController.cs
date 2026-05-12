@@ -26,11 +26,11 @@ namespace OTC.Api.Controllers
         [HttpPost("locations-delete")]
         public async Task<IActionResult> DeleteLocation([FromBody] IdRequest request) => Ok(await _adminService.DeleteLocationAsync(request.Id));
 
-        [HttpPost("regions-list")]
-        public async Task<IActionResult> GetRegions([FromBody] AdminMasterSearchRequest request) => Ok(await _adminService.GetRegionsAsync(request));
+        //[HttpPost("regions-list")]
+        //public async Task<IActionResult> GetRegions([FromBody] AdminMasterSearchRequest request) => Ok(await _adminService.GetRegionsAsync(request));
 
-        [HttpPost("regions")]
-        public async Task<IActionResult> SaveRegion([FromBody] RegionMaster region) => Ok(await _adminService.SaveRegionAsync(region));
+        //[HttpPost("regions")]
+        //public async Task<IActionResult> SaveRegion([FromBody] RegionMaster region) => Ok(await _adminService.SaveRegionAsync(region));
 
         [HttpPost("key-inventory-list")]
         public async Task<IActionResult> GetKeyInventory([FromBody] AdminMasterSearchRequest request) => Ok(await _adminService.GetKeyInventoryAsync(request));
@@ -38,11 +38,11 @@ namespace OTC.Api.Controllers
         [HttpPost("key-inventory")]
         public async Task<IActionResult> SaveKeyInventory([FromBody] KeyInventoryMaster key) => Ok(await _adminService.SaveKeyInventoryAsync(key));
 
-        [HttpPost("one-lines-list")]
-        public async Task<IActionResult> GetOneLines([FromBody] AdminMasterSearchRequest request) => Ok(await _adminService.GetOneLineMastersAsync(request));
+        //[HttpPost("one-lines-list")]
+        //public async Task<IActionResult> GetOneLines([FromBody] AdminMasterSearchRequest request) => Ok(await _adminService.GetOneLineMastersAsync(request));
 
-        [HttpPost("one-lines")]
-        public async Task<IActionResult> SaveOneLine([FromBody] OneLineMaster master) => Ok(await _adminService.SaveOneLineMasterAsync(master));
+        //[HttpPost("one-lines")]
+        //public async Task<IActionResult> SaveOneLine([FromBody] OnlineMaster master) => Ok(await _adminService.SaveOneLineMasterAsync(master));
 
         [HttpPost("site-access-list")]
         public async Task<IActionResult> GetSiteAccess([FromBody] AdminMasterSearchRequest request) => Ok(await _adminService.GetSiteAccessMastersAsync(request));

@@ -44,47 +44,47 @@ namespace OTC.Api.Services
             return dt;
         }
 
-        public async Task<string> SaveCustodianAsync(CustodianMaster custodian, string userName)
-        {
-            using var connection = new SqlConnection(_connectionString);
-            var parameters = new DynamicParameters();
+        //public async Task<string> SaveCustodianAsync(CustodianMaster custodian, string userName)
+        //{
+        //    using var connection = new SqlConnection(_connectionString);
+        //    var parameters = new DynamicParameters();
             
-            bool isUpdate = custodian.Id > 0;
-            string spName = isUpdate ? "usp_CustodianMaster_Update" : "usp_CustodianMaster_Insert";
+        //    //bool isUpdate = custodian.Id >"0";
+        //    string spName = isUpdate ? "usp_CustodianMaster_Update" : "usp_CustodianMaster_Insert";
 
-            if (isUpdate)
-            {
-                parameters.Add("@CustodianCode", custodian.Id);
-                parameters.Add("@Custodian_modifiedBy", userName);
-            }
-            else
-            {
-                parameters.Add("@Photo", custodian.ProfileImage);
-                parameters.Add("@Custodian_CreatedBy", userName);
-            }
+        //    if (isUpdate)
+        //    {
+        //        parameters.Add("@CustodianCode", custodian.Id);
+        //        parameters.Add("@Custodian_modifiedBy", userName);
+        //    }
+        //    else
+        //    {
+        //        parameters.Add("@Photo", custodian.ProfileImage);
+        //        parameters.Add("@Custodian_CreatedBy", userName);
+        //    }
 
-            parameters.Add("@CustodianName", custodian.CustodianName);
-            parameters.Add("@MobileNo", custodian.MobileNumber);
-            parameters.Add("@EmailID", custodian.EmailId);
-            parameters.Add("@LocationName", custodian.LocationId);
-            parameters.Add("@FranschiseName", custodian.FranchiseId);
-            parameters.Add("@IEMI_No", custodian.IemiNo);
-            parameters.Add("@AccessFrom", custodian.AccessFrom);
-            parameters.Add("@AccessTo", custodian.AccessTo);
-            parameters.Add("@Zomname", custodian.ZomId);
-            parameters.Add("@TouchKeyID", custodian.TouchKeyId);
-            parameters.Add("@CustodianID", custodian.CustodianCode);
+        //    parameters.Add("@CustodianName", custodian.CustodianName);
+        //    parameters.Add("@MobileNo", custodian.MobileNumber);
+        //    parameters.Add("@EmailID", custodian.EmailId);
+        //    parameters.Add("@LocationName", custodian.LocationId);
+        //    parameters.Add("@FranschiseName", custodian.FranchiseId);
+        //    parameters.Add("@IEMI_No", custodian.IemiNo);
+        //    parameters.Add("@AccessFrom", custodian.AccessFrom);
+        //    parameters.Add("@AccessTo", custodian.AccessTo);
+        //    parameters.Add("@Zomname", custodian.ZomId);
+        //    parameters.Add("@TouchKeyID", custodian.TouchKeyId);
+        //    parameters.Add("@CustodianID", custodian.CustodianCode);
 
-            try
-            {
-                await connection.ExecuteAsync(spName, parameters, commandType: CommandType.StoredProcedure);
-                return string.Empty;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
+        //    try
+        //    {
+        //        await connection.ExecuteAsync(spName, parameters, commandType: CommandType.StoredProcedure);
+        //        return string.Empty;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return ex.Message;
+        //    }
+        //}
 
         #endregion
 
@@ -94,19 +94,20 @@ namespace OTC.Api.Services
         {
             using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();
-            parameters.Add("@FilterField", string.IsNullOrEmpty(filterField) || filterField == "None" ? DBNull.Value : filterField);
-            parameters.Add("@FilterValue", string.IsNullOrEmpty(filterValue) ? DBNull.Value : filterValue);
+            parameters.Add("@FilterField", string.IsNullOrEmpty(filterField) || filterField == "None" ? null : filterField);
+            parameters.Add("@FilterValue", string.IsNullOrEmpty(filterValue) ? null : filterValue);
 
-            return await connection.QueryAsync<FranchiseMaster>("Proc_GetFranchiseMasterWithFilter", parameters, commandType: CommandType.StoredProcedure);
+             var x= await connection.QueryAsync<FranchiseMaster>("India1_Proc_GetFranchiseMasterWithFilter", parameters, commandType: CommandType.StoredProcedure);
+            return x;
         }
 
-        public async Task<FranchiseMaster?> GetFranchiseByIdAsync(int id)
+        public async Task<FranchiseMaster?> GetFranchiseByIdAsync(string id)
         {
             using var connection = new SqlConnection(_connectionString);
             var parameters = new DynamicParameters();
             parameters.Add("@FranchiseCode", id);
 
-            return await connection.QueryFirstOrDefaultAsync<FranchiseMaster>("Proc_GetFranchiseDetailsByFranchiseCode", parameters, commandType: CommandType.StoredProcedure);
+            return await connection.QueryFirstOrDefaultAsync<FranchiseMaster>("India1_Proc_GetFranchiseDetailsByFranchiseCode", parameters, commandType: CommandType.StoredProcedure);
         }
 
         public async Task<string> SaveFranchiseAsync(FranchiseMaster franchise, string userName)
@@ -291,7 +292,7 @@ namespace OTC.Api.Services
         public async Task<IEnumerable<MasterDropdownItem>> GetDistrictsByStateAsync(int stateId)
         {
             using var connection = new SqlConnection(_connectionString);
-            return await connection.QueryAsync<MasterDropdownItem>("select slno as Id, district_name as Name from DistrictMaster where state_id = @stateId order by district_name", new { stateId });
+            return await connection.QueryAsync<MasterDropdownItem>("select district_id as Id, district_name as Name from DistrictMaster where state_id = @stateId order by district_name", new { stateId });
         }
 
         public async Task<IEnumerable<MasterDropdownItem>> GetCustodiansDropdownAsync()
@@ -410,6 +411,11 @@ namespace OTC.Api.Services
         {
             using var connection = new SqlConnection(_connectionString);
             return await connection.QueryAsync<MasterDropdownItem>("India1_Sp_GetRegion", commandType: CommandType.StoredProcedure);
+        }
+
+        public Task<string> SaveCustodianAsync(CustodianMaster custodian, string userName)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

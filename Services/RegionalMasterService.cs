@@ -20,11 +20,11 @@ namespace OTC.Api.Services
             new DistrictMaster { Id = 2, DistrictName = "Bangalore", StateId = 2, StateName = "Karnataka", IsActive = true }
         };
 
-        private static readonly List<ZomMaster> _mockZoms = new()
-        {
-            new ZomMaster { Id = 1, ZomName = "Mumbai-Zone-1", RegionId = 1, RegionName = "West", LocationId = 1, LocationName = "Mumbai North", IsActive = true },
-            new ZomMaster { Id = 2, ZomName = "Bangalore-Zone-1", RegionId = 2, RegionName = "South", LocationId = 2, LocationName = "Electronic City", IsActive = true }
-        };
+        //private static readonly List<ZomMaster> _mockZoms = new()
+        //{
+        //    new ZomMaster { Id = 1, ZomName = "Mumbai-Zone-1", RegionId = 1, RegionName = "West", LocationId = 1, LocationName = "Mumbai North", IsActive = true },
+        //    new ZomMaster { Id = 2, ZomName = "Bangalore-Zone-1", RegionId = 2, RegionName = "South", LocationId = 2, LocationName = "Electronic City", IsActive = true }
+        //};
 
         // States
         public Task<List<StateMaster>> GetStatesAsync(RegionalSearchRequest request)
@@ -91,35 +91,35 @@ namespace OTC.Api.Services
         }
 
         // ZOMs
-        public Task<List<ZomMaster>> GetZomsAsync(RegionalSearchRequest request)
-        {
-            var result = _mockZoms.AsQueryable();
-            if (!string.IsNullOrEmpty(request.Name))
-                result = result.Where(x => x.ZomName.Contains(request.Name, StringComparison.OrdinalIgnoreCase));
-            return Task.FromResult(result.ToList());
-        }
+        //public Task<List<ZomMaster>> GetZomsAsync(RegionalSearchRequest request)
+        //{
+        //    var result = _mockZoms.AsQueryable();
+        //    if (!string.IsNullOrEmpty(request.Name))
+        //        result = result.Where(x => x.ZomName.Contains(request.Name, StringComparison.OrdinalIgnoreCase));
+        //    return Task.FromResult(result.ToList());
+        //}
 
-        public Task<ZomMaster?> GetZomByIdAsync(int id) => Task.FromResult<ZomMaster?>(_mockZoms.FirstOrDefault(x => x.Id == id));
+        //public Task<ZomMaster?> GetZomByIdAsync(int id) => Task.FromResult<ZomMaster?>(_mockZoms.FirstOrDefault(x => x.Id == id));
 
-        public Task<bool> SaveZomAsync(ZomMaster zom)
-        {
-            if (zom.Id == 0)
-            {
-                zom.Id = _mockZoms.Any() ? _mockZoms.Max(x => x.Id) + 1 : 1;
-                _mockZoms.Add(zom);
-            }
-            else
-            {
-                var existing = _mockZoms.FirstOrDefault(x => x.Id == zom.Id);
-                if (existing != null)
-                {
-                    existing.ZomName = zom.ZomName;
-                    existing.RegionId = zom.RegionId;
-                    existing.LocationId = zom.LocationId;
-                    existing.IsActive = zom.IsActive;
-                }
-            }
-            return Task.FromResult(true);
-        }
+        //public Task<bool> SaveZomAsync(ZomMaster zom)
+        //{
+        //    if (zom.Id == 0)
+        //    {
+        //        zom.Id = _mockZoms.Any() ? _mockZoms.Max(x => x.Id) + 1 : 1;
+        //        _mockZoms.Add(zom);
+        //    }
+        //    else
+        //    {
+        //        var existing = _mockZoms.FirstOrDefault(x => x.Id == zom.Id);
+        //        if (existing != null)
+        //        {
+        //            existing.ZomName = zom.ZomName;
+        //            existing.RegionId = zom.RegionId;
+        //            existing.LocationId = zom.LocationId;
+        //            existing.IsActive = zom.IsActive;
+        //        }
+        //    }
+        //    return Task.FromResult(true);
+        //}
     }
 }

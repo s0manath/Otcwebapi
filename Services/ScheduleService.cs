@@ -1,8 +1,9 @@
-using System.Data;
+using Azure.Core;
 using Dapper;
 using Microsoft.Data.SqlClient;
-using OTC.Api.Models;
 using Microsoft.Extensions.Configuration;
+using OTC.Api.Models;
+using System.Data;
 
 namespace OTC.Api.Services;
 
@@ -156,5 +157,36 @@ public class ScheduleService : IScheduleService
 
             return result.Select(x => new ActivityType { Name = x.SubVal }).ToList();
         }
+    }
+
+    public async Task<IEnumerable<BulkScheduleUpload>> BulkScheduleUpload(List<ScheduleInsertRequest> requests)
+    {
+        var results = new List<BulkScheduleUpload>();
+
+        foreach (var request in requests)
+        {
+            try
+            {
+                var inserted = await InsertScheduleAsync(request);
+
+                results.Add(new BulkScheduleUpload
+                {
+                    AtmId = request.AtmId ?? "",
+                    Status = inserted ? "Success" : "Failed",
+                    ErrorMessage = inserted ? "" : "Insert failed"
+                });
+            }
+            catch (Exception ex)
+            {
+                results.Add(new BulkScheduleUpload
+                {
+                    AtmId = request.AtmId ?? "",
+                    Status = "Failed",
+                    ErrorMessage = ex.Message
+                });
+            }
+        }
+
+        return results;
     }
 }

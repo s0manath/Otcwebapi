@@ -21,16 +21,7 @@ namespace OTC.Api.Models
         public bool IsActive { get; set; }
     }
 
-    public class ZomMaster
-    {
-        public int Id { get; set; }
-        public string ZomName { get; set; }
-        public int? RegionId { get; set; }
-        public string RegionName { get; set; }
-        public int? LocationId { get; set; }
-        public string LocationName { get; set; }
-        public bool IsActive { get; set; }
-    }
+
 
     public class RegionalSearchRequest
     {

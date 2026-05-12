@@ -15,11 +15,11 @@ namespace OTC.Api.Services
             new LocationMaster { Id = 2, LocationName = "Uptown", RegionCode = "REG002", RegionName = "South Region" }
         };
 
-        private static readonly List<RegionMaster> _regions = new()
-        {
-            new RegionMaster { Id = 1, RegionCode = "REG001", RegionName = "North Region" },
-            new RegionMaster { Id = 2, RegionCode = "REG002", RegionName = "South Region" }
-        };
+        //private static readonly List<RegionMaster> _regions = new()
+        //{
+        //    new RegionMaster { Id = 1, RegionCode = "REG001", RegionName = "North Region" },
+        //    new RegionMaster { Id = 2, RegionCode = "REG002", RegionName = "South Region" }
+        //};
 
         private static readonly List<PendingLoginRequest> _pendingRequests = new()
         {
@@ -28,7 +28,7 @@ namespace OTC.Api.Services
         };
 
         private static readonly List<KeyInventoryMaster> _keys = new();
-        private static readonly List<OneLineMaster> _oneLines = new();
+        //private static readonly List<OneLineMaster> _oneLines = new();
         private static readonly List<SiteAccessMaster> _siteAccess = new();
         private static readonly List<RouteMasterAdmin> _routeMasters = new();
         private static readonly List<CustodianLoginMapping> _custodianMappings = new();
@@ -68,37 +68,37 @@ namespace OTC.Api.Services
             return await Task.FromResult(true);
         }
 
-        public async Task<List<RegionMaster>> GetRegionsAsync(AdminMasterSearchRequest request)
-        {
-            return await Task.FromResult(_regions);
-        }
+        //public async Task<List<RegionMaster>> GetRegionsAsync(AdminMasterSearchRequest request)
+        //{
+        //    return await Task.FromResult(_regions);
+        //}
 
-        public async Task<bool> SaveRegionAsync(RegionMaster region)
-        {
-            if (region.Id > 0)
-            {
-                var existing = _regions.FirstOrDefault(r => r.Id == region.Id);
-                if (existing != null)
-                {
-                    existing.RegionCode = region.RegionCode;
-                    existing.RegionName = region.RegionName;
-                    existing.IsActive = region.IsActive;
-                }
-            }
-            else
-            {
-                region.Id = _regions.Count > 0 ? _regions.Max(r => r.Id) + 1 : 1;
-                _regions.Add(region);
-            }
-            return await Task.FromResult(true);
-        }
+        //public async Task<bool> SaveRegionAsync(RegionMaster region)
+        //{
+        //    if (region.Id > 0)
+        //    {
+        //        var existing = _regions.FirstOrDefault(r => r.Id == region.Id);
+        //        if (existing != null)
+        //        {
+        //            existing.RegionCode = region.RegionCode;
+        //            existing.RegionName = region.RegionName;
+        //            existing.IsActive = region.IsActive;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        region.Id = _regions.Count > 0 ? _regions.Max(r => r.Id) + 1 : 1;
+        //        _regions.Add(region);
+        //    }
+        //    return await Task.FromResult(true);
+        //}
 
-        public async Task<bool> DeleteRegionAsync(int id)
-        {
-            var item = _regions.FirstOrDefault(r => r.Id == id);
-            if (item != null) _regions.Remove(item);
-            return await Task.FromResult(true);
-        }
+        //public async Task<bool> DeleteRegionAsync(int id)
+        //{
+        //    var item = _regions.FirstOrDefault(r => r.Id == id);
+        //    if (item != null) _regions.Remove(item);
+        //    return await Task.FromResult(true);
+        //}
 
         public async Task<List<KeyInventoryMaster>> GetKeyInventoryAsync(AdminMasterSearchRequest request) => await Task.FromResult(_keys);
         public async Task<bool> SaveKeyInventoryAsync(KeyInventoryMaster key)
@@ -109,8 +109,8 @@ namespace OTC.Api.Services
         }
         public async Task<bool> DeleteKeyInventoryAsync(int id) => await Task.FromResult(true);
 
-        public async Task<List<OneLineMaster>> GetOneLineMastersAsync(AdminMasterSearchRequest request) => await Task.FromResult(_oneLines);
-        public async Task<bool> SaveOneLineMasterAsync(OneLineMaster master) => await Task.FromResult(true);
+        //public async Task<List<OneLineMaster>> GetOneLineMastersAsync(AdminMasterSearchRequest request) => await Task.FromResult(_oneLines);
+        //public async Task<bool> SaveOneLineMasterAsync(OneLineMaster master) => await Task.FromResult(true);
         public async Task<bool> DeleteOneLineMasterAsync(int id) => await Task.FromResult(true);
 
         public async Task<List<SiteAccessMaster>> GetSiteAccessMastersAsync(AdminMasterSearchRequest request) => await Task.FromResult(_siteAccess);

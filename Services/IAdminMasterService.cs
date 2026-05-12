@@ -12,9 +12,9 @@ namespace OTC.Api.Services
         Task<bool> DeleteLocationAsync(int id);
 
         // Region Master
-        Task<List<RegionMaster>> GetRegionsAsync(AdminMasterSearchRequest request);
-        Task<bool> SaveRegionAsync(RegionMaster region);
-        Task<bool> DeleteRegionAsync(int id);
+        //Task<List<RegionMaster>> GetRegionsAsync(AdminMasterSearchRequest request);
+        //Task<bool> SaveRegionAsync(RegionMaster region);
+        //Task<bool> DeleteRegionAsync(int id);
 
         // Key Inventory
         Task<List<KeyInventoryMaster>> GetKeyInventoryAsync(AdminMasterSearchRequest request);
@@ -22,8 +22,8 @@ namespace OTC.Api.Services
         Task<bool> DeleteKeyInventoryAsync(int id);
 
         // OneLine Master
-        Task<List<OneLineMaster>> GetOneLineMastersAsync(AdminMasterSearchRequest request);
-        Task<bool> SaveOneLineMasterAsync(OneLineMaster master);
+        //Task<List<OneLineMaster>> GetOneLineMastersAsync(AdminMasterSearchRequest request);
+        //Task<bool> SaveOneLineMasterAsync(OneLineMaster master);
         Task<bool> DeleteOneLineMasterAsync(int id);
 
         // Site Access Master

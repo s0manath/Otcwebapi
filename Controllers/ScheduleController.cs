@@ -87,4 +87,21 @@ public class ScheduleController : ControllerBase
             return StatusCode(500, new { message = ex.Message });
         }
     }
+
+
+    [HttpPost("bulk-upload")]
+    public async Task<IActionResult> BulkScheduleUpload(
+     [FromBody] List<ScheduleInsertRequest> request)
+    {
+        try
+        {
+            var result = await _scheduleService.BulkScheduleUpload(request);
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
 }

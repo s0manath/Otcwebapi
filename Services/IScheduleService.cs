@@ -9,4 +9,5 @@ public interface IScheduleService
     Task<bool> UpdateScheduleAsync(ScheduleUpdateRequest request);
     Task<bool> DeleteScheduleAsync(string scheduleId, string username);
     Task<IEnumerable<ActivityType>> GetActivityTypesAsync();
+    Task <IEnumerable<BulkScheduleUpload>>BulkScheduleUpload(List<ScheduleInsertRequest> request);
 }

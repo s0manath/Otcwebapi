@@ -49,3 +49,13 @@ public class ScheduleDeleteRequest
     public string Id { get; set; } = string.Empty;
     public string Username { get; set; } = "admin";
 }
+public class BulkScheduleUpload
+{
+
+        public string AtmId { get; set; } = string.Empty;
+
+        public string Status { get; set; } = string.Empty;
+
+        public string ErrorMessage { get; set; } = string.Empty;
+    
+}
